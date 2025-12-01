@@ -102,8 +102,8 @@ Branch 'main' set up to track remote branch 'main' from 'origin'.
 
    # Steam API
    STEAM_API_KEY=your-steam-api-key-here
-   STEAM_RETURN_URL=https://cskarma.vercel.app/auth/callback
-   STEAM_REALM=https://cskarma.vercel.app/
+   STEAM_RETURN_URL=https://your-backend-url.railway.app/auth/steam/return
+   STEAM_REALM=https://your-backend-url.railway.app/
    ```
 
 6. **Click "Deploy"**
