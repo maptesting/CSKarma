@@ -31,14 +31,19 @@ export default function Search() {
       // Match patterns like:
       // https://steamcommunity.com/id/vanityname/
       // https://steamcommunity.com/profiles/76561198012345678/
-      const vanityMatch = searchQuery.match(/steamcommunity\.com\/id\/([^\/]+)/);
-      const profileMatch = searchQuery.match(/steamcommunity\.com\/profiles\/(\d+)/);
+      // Handle both http and https, with or without www, with or without trailing slash
+      const vanityMatch = searchQuery.match(/steamcommunity\.com\/id\/([^\/\?#]+)/i);
+      const profileMatch = searchQuery.match(/steamcommunity\.com\/profiles\/(\d+)/i);
 
       if (vanityMatch) {
         searchQuery = vanityMatch[1];
+        console.log('Extracted vanity name:', searchQuery);
       } else if (profileMatch) {
         searchQuery = profileMatch[1];
+        console.log('Extracted Steam ID:', searchQuery);
       }
+
+      console.log('Final search query:', searchQuery);
 
       // Use the new lookup endpoint that searches Steam directly
       const lookupResponse = await fetch(`${BACKEND_URL}/api/lookup/${encodeURIComponent(searchQuery)}`);
