@@ -41,6 +41,11 @@ export default function Search() {
       } else if (profileMatch) {
         searchQuery = profileMatch[1];
         console.log('Extracted Steam ID:', searchQuery);
+      } else if (searchQuery.includes('steamcommunity.com')) {
+        // Fallback: if it's still a Steam URL but regex didn't match, show error with helpful message
+        setError('Could not parse Steam profile URL. Please copy just the Steam ID or username instead.');
+        setLoading(false);
+        return;
       }
 
       console.log('Final search query:', searchQuery);
