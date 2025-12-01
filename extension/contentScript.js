@@ -131,20 +131,27 @@ async function sendVote(tag, targetSteamId) {
 }
 
 function fetchScore(steamId, cb) {
-  fetch(`${BACKEND_URL}/api/users`)
+  console.log('Fetching score for Steam ID:', steamId);
+  // Use the new lookup endpoint that works for any Steam user
+  fetch(`${BACKEND_URL}/api/lookup/${steamId}`)
     .then(r => {
-      if (!r.ok) throw new Error('Failed to fetch users');
+      console.log('Lookup response status:', r.status);
+      if (!r.ok) {
+        if (r.status === 404) {
+          console.log('User not found in Steam API');
+          return cb(null, null, steamId);
+        }
+        throw new Error('Failed to lookup user');
+      }
       return r.json();
     })
-    .then(users => {
-      const user = users.find(u => u.steam_id === steamId);
-      if (!user) return cb(null, null, steamId);
-      return fetch(`${BACKEND_URL}/api/votes/aggregate/${user.id}`)
-        .then(r2 => {
-          if (!r2.ok) throw new Error('Failed to fetch score');
-          return r2.json();
-        })
-        .then(data => cb(data.vibeScore, data.warning, steamId));
+    .then(data => {
+      console.log('Lookup data received:', data);
+      if (data) {
+        cb(data.vibeScore, data.warning, steamId);
+      } else {
+        cb(null, null, steamId);
+      }
     })
     .catch(err => {
       console.error('Error fetching score:', err);
