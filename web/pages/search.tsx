@@ -25,8 +25,23 @@ export default function Search() {
     setResult(null);
 
     try {
+      // Extract Steam ID or vanity name from URL if user pasted a full Steam URL
+      let searchQuery = q.trim();
+
+      // Match patterns like:
+      // https://steamcommunity.com/id/vanityname/
+      // https://steamcommunity.com/profiles/76561198012345678/
+      const vanityMatch = searchQuery.match(/steamcommunity\.com\/id\/([^\/]+)/);
+      const profileMatch = searchQuery.match(/steamcommunity\.com\/profiles\/(\d+)/);
+
+      if (vanityMatch) {
+        searchQuery = vanityMatch[1];
+      } else if (profileMatch) {
+        searchQuery = profileMatch[1];
+      }
+
       // Use the new lookup endpoint that searches Steam directly
-      const lookupResponse = await fetch(`${BACKEND_URL}/api/lookup/${encodeURIComponent(q)}`);
+      const lookupResponse = await fetch(`${BACKEND_URL}/api/lookup/${encodeURIComponent(searchQuery)}`);
 
       if (!lookupResponse.ok) {
         if (lookupResponse.status === 404) {
