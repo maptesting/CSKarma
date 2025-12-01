@@ -22,6 +22,9 @@ const allowedOrigins = process.env.FRONTEND_URL
   ? process.env.FRONTEND_URL.split(',')
   : ['http://localhost:3000'];
 
+// Always allow steamcommunity.com for the Chrome extension
+allowedOrigins.push('https://steamcommunity.com');
+
 app.use(cors({
   credentials: true,
   origin: (origin, callback) => {

@@ -5,7 +5,25 @@ console.log('🎮 Karma extension loaded! URL:', window.location.href);
 
 // Where to inject on Steam profile
 function getPlayerNameElement() {
-  return document.querySelector('.profile_header .profile_header_summary .persona_name');
+  // Try multiple selectors for different Steam profile layouts
+  const selectors = [
+    '.profile_header .profile_header_summary .persona_name',
+    '.profile_header_name .actual_persona_name',
+    '.playerAvatar .persona_name',
+    '.profile_page .persona_name',
+    'span.actual_persona_name'
+  ];
+
+  for (const selector of selectors) {
+    const elem = document.querySelector(selector);
+    if (elem) {
+      console.log('✅ Found player name element using selector:', selector);
+      return elem;
+    }
+  }
+
+  console.log('❌ Could not find player name element with any selector');
+  return null;
 }
 
 function createBadge(score, warningText) {
