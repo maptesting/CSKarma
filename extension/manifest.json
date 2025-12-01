@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "Karma (Vibe Check) - Steam Overlay",
-  "version": "1.0.0",
-  "description": "Displays Vibe Scores on Steam profiles and allows quick voting against toxicity.",
+  "name": "CommSafe - Steam Player Safety",
+  "version": "2.0.0",
+  "description": "View player safety scores on Steam profiles. Know who you're playing with before the match starts.",
   "icons": {
     "16": "icons/karma16.png",
     "32": "icons/karma32.png",
@@ -32,6 +32,6 @@
       "32": "icons/karma32.png",
       "128": "icons/karma128.png"
     },
-    "default_title": "Karma Vibe Check"
+    "default_title": "CommSafe Player Safety"
   }
 }

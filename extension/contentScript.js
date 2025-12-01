@@ -1,7 +1,7 @@
 // Configuration - can be changed via extension settings
 const BACKEND_URL = 'https://cskarma-production.up.railway.app';
 
-console.log('🎮 Karma extension loaded! URL:', window.location.href);
+console.log('🛡️ CommSafe extension loaded! URL:', window.location.href);
 
 // Where to inject on Steam profile
 function getPlayerNameElement() {

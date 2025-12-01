@@ -42,13 +42,13 @@ export default function Home() {
       <div className="home-bg">
         <div className="container">
           <h1 className="home-title">
-            Know the Vibe Before You Play
+            Safe Communication, Better Gaming
           </h1>
           <p className="home-subtitle">
             Community-powered player reputation for CS2 & Steam
           </p>
           <p className="home-desc">
-            Karma shows you real teammate feedback on Steam profiles. See who brings positive energy and who might ruin your match—before you hit accept.
+            CommSafe shows you real teammate feedback on Steam profiles. See who brings positive energy and who might ruin your match—before you hit accept.
           </p>
           <a href={`${BACKEND_URL}/auth/steam`} className="btn-primary home-login">
             <span>🎮</span> Login with Steam

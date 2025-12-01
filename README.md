@@ -1,8 +1,8 @@
-# 🎮 CSKarma - Community Vibe Check for Steam Players
+# 🛡️ CommSafe - Community Safety for Steam Players
 
-**Know the vibe before you play.** CSKarma is a community-powered reputation system for Steam players. See teammate feedback, vibe scores, and toxic warnings directly on Steam profiles.
+**Safe Communication, Better Gaming.** CommSafe is a community-powered player safety system for Steam. See teammate feedback, safety scores, and behavior warnings directly on Steam profiles.
 
-![Version](https://img.shields.io/badge/version-1.0.0-blue)
+![Version](https://img.shields.io/badge/version-2.0.0-blue)
 ![License](https://img.shields.io/badge/license-MIT-green)
 ![Platform](https://img.shields.io/badge/platform-Steam%20%7C%20CS2-orange)
 
@@ -11,11 +11,11 @@
 ## ✨ Features
 
 ### 🌟 For Players
-- **Instant Vibe Scores**: See reputation scores (1-5) on any Steam profile
-- **Community Tags**: Helpful, Toxic, No Mic, Rager - know what to expect
-- **Toxic Warnings**: Automatic alerts for players with 10+ toxic reports
+- **Instant Safety Scores**: See reputation scores (1-5) on any Steam profile
+- **Community Tags**: Helpful, Toxic, Team Player, Cheater - know what to expect
+- **Behavior Warnings**: Automatic alerts for players with multiple negative reports
 - **Chrome Extension**: Seamless overlay directly on steamcommunity.com
-- **Anonymous Voting**: Rate players you've played with (MVP feature)
+- **Anonymous Voting**: Rate players you've played with safely and anonymously
 
 ### 🛠️ For Developers
 - **Full-stack TypeScript**: Type-safe backend and frontend

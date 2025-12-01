@@ -54,7 +54,7 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 app.get('/', (req, res) => {
-  res.json({ status: 'ok', service: 'karma-backend' });
+  res.json({ status: 'ok', service: 'commsafe-backend' });
 });
 
 // Add /me endpoint to check authentication
