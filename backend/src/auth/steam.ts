@@ -30,17 +30,29 @@ passport.use(new SteamStrategy({
   // profile has .id for steam_id, .displayName, etc.
   // Upsert user in Supabase
   try {
-    const { data, error } = await (supabase.from('users').upsert({
-      steam_id: profile.id,
-      username: profile.displayName
-    }, { onConflict: 'steam_id' }) as unknown as Promise<{ data: any[]; error: any }>);
-    if (error) return done(error);
-    let db_id;
-    if (data && Array.isArray(data) && data[0] && data[0].id) {
-      db_id = data[0].id;
+    const { data, error } = await supabase
+      .from('users')
+      .upsert({
+        steam_id: profile.id,
+        username: profile.displayName
+      }, { onConflict: 'steam_id' })
+      .select()
+      .single();
+
+    if (error) {
+      console.error('Supabase upsert error:', error);
+      return done(error);
     }
-    return done(null, { ...profile, db_id });
+
+    if (!data || !data.id) {
+      console.error('No user data returned from upsert');
+      return done(new Error('Failed to create/update user'));
+    }
+
+    console.log('Steam auth successful, user db_id:', data.id);
+    return done(null, { ...profile, db_id: data.id });
   } catch (err) {
+    console.error('Steam auth error:', err);
     done(err);
   }
 }));
