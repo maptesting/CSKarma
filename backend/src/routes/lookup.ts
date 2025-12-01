@@ -20,7 +20,7 @@ router.get('/:steamIdOrVanity', async (req, res) => {
     if (!/^\d+$/.test(steamIdOrVanity)) {
       const vanityUrl = `https://api.steampowered.com/ISteamUser/ResolveVanityURL/v0001/?key=${process.env.STEAM_API_KEY}&vanityurl=${steamIdOrVanity}`;
       const vanityResponse = await fetch(vanityUrl);
-      const vanityData = await vanityResponse.json();
+      const vanityData = await vanityResponse.json() as any;
 
       if (vanityData.response.success === 1) {
         steamId = vanityData.response.steamid;
@@ -32,7 +32,7 @@ router.get('/:steamIdOrVanity', async (req, res) => {
     // Get player info from Steam API
     const steamApiUrl = `${STEAM_API_URL}?key=${process.env.STEAM_API_KEY}&steamids=${steamId}`;
     const steamResponse = await fetch(steamApiUrl);
-    const steamData = await steamResponse.json();
+    const steamData = await steamResponse.json() as any;
 
     if (!steamData.response?.players?.length) {
       return res.status(404).json({ error: 'Steam user not found' });
