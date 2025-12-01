@@ -49,8 +49,8 @@ passport.use(new SteamStrategy({
       return done(new Error('Failed to create/update user'));
     }
 
-    console.log('Steam auth successful, user db_id:', data.id);
-    return done(null, { ...profile, db_id: data.id });
+    console.log('Steam auth successful, user db_id:', data.id, 'is_admin:', data.is_admin);
+    return done(null, { ...profile, db_id: data.id, is_admin: data.is_admin || false });
   } catch (err) {
     console.error('Steam auth error:', err);
     done(err);
@@ -68,7 +68,8 @@ router.get('/steam/return',
     const userInfo = encodeURIComponent(JSON.stringify({
       username: user.displayName,
       steam_id: user.id,
-      db_id: user.db_id
+      db_id: user.db_id,
+      is_admin: user.is_admin || false
     }));
     res.redirect(`${process.env.FRONTEND_URL}?auth=success&user=${userInfo}`);
   }
