@@ -7,22 +7,33 @@ export default function Home() {
   const [user, setUser] = useState<any>(null);
 
   useEffect(() => {
-    // Check if user is logged in
-    console.log('Fetching user from:', `${BACKEND_URL}/me`);
-    fetch(`${BACKEND_URL}/me`, { credentials: 'include' })
-      .then(res => {
-        console.log('Response status:', res.status);
-        console.log('Response ok:', res.ok);
-        return res.ok ? res.json() : null;
-      })
-      .then(data => {
-        console.log('User data received:', data);
-        setUser(data?.user || null);
-      })
-      .catch(err => {
-        console.error('Error fetching user:', err);
-        setUser(null);
-      });
+    // Check if user info is in URL params (from Steam redirect)
+    const urlParams = new URLSearchParams(window.location.search);
+    const authSuccess = urlParams.get('auth');
+    const userParam = urlParams.get('user');
+
+    if (authSuccess === 'success' && userParam) {
+      try {
+        const userData = JSON.parse(decodeURIComponent(userParam));
+        console.log('User authenticated via Steam:', userData);
+        localStorage.setItem('user', JSON.stringify(userData));
+        setUser(userData);
+        // Clean up URL
+        window.history.replaceState({}, '', '/');
+      } catch (e) {
+        console.error('Failed to parse user data from URL:', e);
+      }
+    } else {
+      // Check localStorage for existing session
+      const storedUser = localStorage.getItem('user');
+      if (storedUser) {
+        try {
+          setUser(JSON.parse(storedUser));
+        } catch (e) {
+          localStorage.removeItem('user');
+        }
+      }
+    }
   }, []);
 
   return (

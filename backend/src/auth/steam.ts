@@ -48,11 +48,17 @@ passport.use(new SteamStrategy({
 // Set up session before router usage in entrypoint
 router.get('/steam', passport.authenticate('steam', { session: true }));
 
-router.get('/steam/return', 
+router.get('/steam/return',
   passport.authenticate('steam', { failureRedirect: '/', session: true }),
   (req, res) => {
-    // Success, can redirect to frontend/
-    res.redirect(process.env.FRONTEND_URL || '/');
+    // Success, redirect to frontend with user info in URL params
+    const user = req.user as any;
+    const userInfo = encodeURIComponent(JSON.stringify({
+      username: user.displayName,
+      steam_id: user.id,
+      db_id: user.db_id
+    }));
+    res.redirect(`${process.env.FRONTEND_URL}?auth=success&user=${userInfo}`);
   }
 );
 
