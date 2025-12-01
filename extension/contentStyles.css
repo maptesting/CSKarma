@@ -1,0 +1,115 @@
+#karma-vibe-root {
+  position: relative;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', sans-serif;
+  display: inline-flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.karma-vibe-badge {
+  background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+  color: #fff;
+  font-weight: 700;
+  font-size: 14px;
+  border-radius: 20px;
+  padding: 6px 16px;
+  margin-left: 12px;
+  box-shadow: 0 4px 14px rgba(99, 102, 241, 0.35);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  vertical-align: middle;
+  transition: all 0.2s ease;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+}
+
+.karma-vibe-badge:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(99, 102, 241, 0.45);
+}
+
+.karma-vibe-modal {
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  z-index: 999999;
+  background: #ffffff;
+  border-radius: 20px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  transform: translate(-50%, -50%);
+  max-width: 420px;
+  min-width: 360px;
+  padding: 2.5rem 2rem 2rem 2rem;
+  border: 1px solid rgba(99, 102, 241, 0.2);
+  animation: modalFadeIn 0.2s ease;
+}
+
+@keyframes modalFadeIn {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -48%);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%);
+  }
+}
+
+.karma-vibe-modal h3 {
+  margin: 0 0 1.5rem 0;
+  font-size: 24px;
+  font-weight: 800;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.karma-vibe-modal button {
+  min-width: 110px;
+  margin: 0 8px 10px 0;
+  border-radius: 10px;
+  border: 2px solid transparent;
+  padding: 12px 20px;
+  font-weight: 700;
+  background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+  color: #fff;
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+  cursor: pointer;
+  font-size: 15px;
+  transition: all 0.2s ease;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+.karma-vibe-modal button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(99, 102, 241, 0.45);
+}
+
+.karma-vibe-modal button:active {
+  transform: translateY(0);
+}
+
+.karma-vibe-close {
+  position: absolute;
+  right: 16px;
+  top: 16px;
+  font-size: 28px;
+  color: #64748b;
+  background: rgba(100, 116, 139, 0.1);
+  border: none;
+  cursor: pointer;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.karma-vibe-close:hover {
+  background: rgba(239, 68, 68, 0.15);
+  color: #ef4444;
+  transform: rotate(90deg);
+}
