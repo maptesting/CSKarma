@@ -42,6 +42,36 @@ router.post('/', async (req, res) => {
       .single();
 
     if (error) return res.status(400).json({ error: error.message });
+
+    // Trigger notification if it's a significant vote
+    const negativeSet = new Set(['Toxic', 'Rager', 'Cheater', 'AFK']);
+    const positiveSet = new Set(['Helpful', 'Team Player', 'Friendly', 'Skilled']);
+
+    if (negativeSet.has(tag)) {
+      // Check if user has notification preferences
+      fetch(`${process.env.BACKEND_URL || 'http://localhost:4000'}/api/notifications/trigger`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          userId: target_id,
+          type: 'warning',
+          message: `You received a "${tag}" rating from another player`,
+          metadata: { tag, match_id }
+        })
+      }).catch(err => console.error('Notification trigger failed:', err));
+    } else if (positiveSet.has(tag)) {
+      fetch(`${process.env.BACKEND_URL || 'http://localhost:4000'}/api/notifications/trigger`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          userId: target_id,
+          type: 'positive',
+          message: `You received a "${tag}" rating from another player! 🎉`,
+          metadata: { tag, match_id }
+        })
+      }).catch(err => console.error('Notification trigger failed:', err));
+    }
+
     res.status(201).json(data);
   } catch (err: any) {
     res.status(500).json({ error: err.message || 'Unknown error' });
