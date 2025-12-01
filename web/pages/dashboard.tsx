@@ -33,6 +33,14 @@ export default function Dashboard() {
 
     try {
       const userData = JSON.parse(storedUser);
+      console.log('Dashboard user data:', userData);
+
+      if (!userData.db_id) {
+        setError('User account not properly configured. Please log in again.');
+        setLoading(false);
+        return;
+      }
+
       setUser(userData);
       fetchUserStats(userData.db_id);
     } catch (e) {

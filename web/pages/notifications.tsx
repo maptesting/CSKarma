@@ -46,6 +46,14 @@ export default function Notifications() {
 
     try {
       const userData = JSON.parse(storedUser);
+      console.log('User data:', userData);
+
+      if (!userData.db_id) {
+        console.error('User missing db_id');
+        setLoading(false);
+        return;
+      }
+
       setUser(userData);
       fetchPreferences(userData.db_id);
       fetchNotifications(userData.db_id);
@@ -70,9 +78,18 @@ export default function Notifications() {
     try {
       const response = await fetch(`${BACKEND_URL}/api/notifications/history/${userId}`);
       const data = await response.json();
-      setNotifications(data);
+      console.log('Notifications data:', data);
+
+      // Ensure data is an array
+      if (Array.isArray(data)) {
+        setNotifications(data);
+      } else {
+        console.error('Notifications data is not an array:', data);
+        setNotifications([]);
+      }
     } catch (e) {
       console.error('Failed to fetch notifications:', e);
+      setNotifications([]);
     } finally {
       setLoading(false);
     }
