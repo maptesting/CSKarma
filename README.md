@@ -182,14 +182,18 @@ Response:
 
 See [FEATURE_IDEAS.md](FEATURE_IDEAS.md) for the full roadmap. Highlights:
 
-### Phase 1: Core MVP+
-- User dashboard (personal stats)
-- More vote tags (Team Player, AFK, Cheater, etc.)
-- Notification system (email/Discord)
+### ✅ Phase 1: Core MVP+ (COMPLETED)
+- ✅ User dashboard (personal stats)
+- ✅ More vote tags (Team Player, AFK, Cheater, Friendly, Skilled, etc.)
+- ✅ Notification system (Discord webhooks, Email coming soon)
+- ✅ Real-time Discord notifications on votes received
+- ✅ Tag breakdown visualization
+- ✅ Recent feedback timeline
 
-### Phase 2: Growth
+### Phase 2: Growth (IN PROGRESS)
 - Premium tier ($4.99/mo)
 - Discord bot integration
+- When someone loads into a gme gives player notification like "you just loaded in a game with (profile) their ratings are (ratings)
 - Leaderboards & achievements
 
 ### Phase 3: Scale
