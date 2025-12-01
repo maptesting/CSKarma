@@ -8,6 +8,7 @@ export default function Navbar({ user }: { user?: { username?: string } }) {
       <Link href="/" className="logo" style={{ fontWeight: 700, fontSize: 24 }}>Karma</Link>
       <div style={{ flex: 1 }} />
       <Link href="/search">Search</Link>
+      {user && <Link href="/dashboard" style={{ marginLeft: 24 }}>Dashboard</Link>}
       <Link href="/admin" style={{ marginLeft: 24 }}>Admin</Link>
       {user ? (
         <span style={{ marginLeft: 32 }}>Hello, {user.username || 'User'}</span>

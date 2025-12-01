@@ -12,7 +12,7 @@ router.post('/', async (req, res) => {
     return res.status(400).json({ error: 'reporter_id, target_id, and tag are required' });
   }
 
-  const validTags = ['Toxic', 'Helpful', 'No Mic', 'Rager'];
+  const validTags = ['Toxic', 'Helpful', 'No Mic', 'Rager', 'Team Player', 'AFK', 'Cheater', 'Friendly', 'Skilled'];
   if (!validTags.includes(tag)) {
     return res.status(400).json({ error: 'Invalid tag. Must be one of: ' + validTags.join(', ') });
   }
@@ -65,14 +65,34 @@ router.get('/aggregate/:id', async (req, res) => {
   // Only last 30 days
   const cutoff = new Date(Date.now() - 30*24*60*60*1000);
   const recent = (data || []).filter(v => new Date(v.created_at) > cutoff);
-  // Tag weighting for scores
-  const ratingMap = { Helpful: 5, 'No Mic': 3, Rager: 2, Toxic: 1 } as const;
+  // Tag weighting for scores (1-5 scale, 5 = best)
+  const ratingMap = {
+    'Team Player': 5,
+    'Helpful': 5,
+    'Friendly': 5,
+    'Skilled': 4,
+    'No Mic': 3,
+    'Rager': 2,
+    'AFK': 1,
+    'Toxic': 1,
+    'Cheater': 1
+  } as const;
   const scores = recent.map(v => ratingMap[v.tag as keyof typeof ratingMap] ?? 3);
   const avg = scores.length > 0 ? (scores.reduce((a,b)=>a+b,0) / scores.length) : null;
-  // Warning if many recent "Toxic" votes
-  const TOXIC_WARNING_THRESHOLD = 10;
+
+  // Warnings for serious issues
   const toxicCount = recent.filter(v => v.tag === 'Toxic').length;
-  const warning = toxicCount >= TOXIC_WARNING_THRESHOLD ? `Warning: flagged as toxic by ${toxicCount} users in the last month!` : undefined;
+  const cheaterCount = recent.filter(v => v.tag === 'Cheater').length;
+  const afkCount = recent.filter(v => v.tag === 'AFK').length;
+
+  let warning = undefined;
+  if (cheaterCount >= 5) {
+    warning = `🚫 WARNING: Reported as cheater by ${cheaterCount} users!`;
+  } else if (toxicCount >= 10) {
+    warning = `⚠️ Flagged as toxic by ${toxicCount} users in the last month!`;
+  } else if (afkCount >= 8) {
+    warning = `💤 Frequently AFK - reported ${afkCount} times this month`;
+  }
   res.json({ vibeScore: avg ? Number(avg.toFixed(2)) : null, warning });
 });
 

@@ -95,7 +95,7 @@ function openVoteModal(steamId) {
   modal.appendChild(title);
   modal.appendChild(buttonContainer);
 
-  ['Helpful','Toxic','No Mic','Rager'].forEach(type => {
+  ['Helpful', 'Team Player', 'Friendly', 'Skilled', 'Toxic', 'Rager', 'No Mic', 'AFK', 'Cheater'].forEach(type => {
     const b = document.createElement('button');
     b.textContent = type;
     b.onclick = async () => {
