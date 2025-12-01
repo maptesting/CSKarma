@@ -95,18 +95,17 @@ export default function Home() {
     <>
       <Navbar user={user} />
       <div className="home-bg">
-        <div className="container" style={{ position: 'relative', marginRight: 'auto', marginLeft: 'auto' }}>
-          {/* Live Feed Sidebar - Desktop Only */}
-          <div style={{
-            position: 'fixed',
-            right: 'max(2rem, calc((100vw - 1600px) / 2))',
-            top: '120px',
-            width: '340px',
-            maxHeight: 'calc(100vh - 140px)',
-            overflowY: 'auto',
-            display: 'none',
-            zIndex: 50
-          }} className="live-feed-sidebar">
+        {/* Live Feed Sidebar - Desktop Only - Outside Container */}
+        <div style={{
+          position: 'fixed',
+          right: '2rem',
+          top: '120px',
+          width: '320px',
+          maxHeight: 'calc(100vh - 140px)',
+          overflowY: 'auto',
+          display: 'none',
+          zIndex: 50
+        }} className="live-feed-sidebar">
             <div style={{
               background: 'rgba(255, 255, 255, 0.98)',
               borderRadius: '16px',
@@ -189,6 +188,7 @@ export default function Home() {
             </div>
           </div>
 
+        <div className="container" style={{ position: 'relative', marginRight: 'auto', marginLeft: 'auto' }}>
           {/* Main Content */}
           <div style={{ maxWidth: '1180px', margin: '0 auto', paddingRight: '0' }}>
             <h1 className="home-title" style={{ fontSize: '72px', marginBottom: '2rem' }}>
@@ -331,7 +331,7 @@ export default function Home() {
           display: none;
         }
 
-        @media (min-width: 1400px) {
+        @media (min-width: 1800px) {
           .live-feed-sidebar {
             display: block !important;
           }
