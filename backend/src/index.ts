@@ -57,7 +57,14 @@ app.get('/', (req, res) => {
 // Add /me endpoint to check authentication
 app.get('/me', (req, res) => {
   if (req.user) {
-    res.json({ user: req.user });
+    const user = req.user as any;
+    res.json({
+      user: {
+        username: user.displayName || user.username,
+        steam_id: user.id,
+        db_id: user.db_id
+      }
+    });
   } else {
     res.status(401).json({ error: 'Not authenticated' });
   }
