@@ -35,7 +35,7 @@ app.use(cors({
 
 app.use(express.json({ limit: '10mb' }));
 
-// Session configuration with secure settings
+// Session configuration with secure settings for cross-domain auth
 app.use(session({
   secret: process.env.SESSION_SECRET,
   resave: false,
@@ -44,7 +44,7 @@ app.use(session({
     secure: process.env.NODE_ENV === 'production',
     httpOnly: true,
     maxAge: 24 * 60 * 60 * 1000, // 24 hours
-    sameSite: process.env.NODE_ENV === 'production' ? 'strict' : 'lax'
+    sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax' // 'none' allows cross-domain cookies
   }
 }));
 app.use(passport.initialize());
@@ -52,6 +52,15 @@ app.use(passport.session());
 
 app.get('/', (req, res) => {
   res.json({ status: 'ok', service: 'karma-backend' });
+});
+
+// Add /me endpoint to check authentication
+app.get('/me', (req, res) => {
+  if (req.user) {
+    res.json({ user: req.user });
+  } else {
+    res.status(401).json({ error: 'Not authenticated' });
+  }
 });
 
 app.use('/auth', authRouter);

@@ -1,11 +1,22 @@
+import { useEffect, useState } from 'react';
 import Navbar from '../components/Navbar';
 
 const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:4000';
 
 export default function Home() {
+  const [user, setUser] = useState<any>(null);
+
+  useEffect(() => {
+    // Check if user is logged in
+    fetch(`${BACKEND_URL}/me`, { credentials: 'include' })
+      .then(res => res.ok ? res.json() : null)
+      .then(data => setUser(data?.user || null))
+      .catch(() => setUser(null));
+  }, []);
+
   return (
     <>
-      <Navbar />
+      <Navbar user={user} />
       <div className="home-bg">
         <div className="container">
           <h1 className="home-title">
