@@ -9,6 +9,7 @@ export default function Navbar({ user }: { user?: { username?: string; is_admin?
       <div style={{ flex: 1 }} />
       <Link href="/search">Search</Link>
       <Link href="/match-check" style={{ marginLeft: 24 }}>Match Check</Link>
+      <Link href="/leaderboards" style={{ marginLeft: 24 }}>Leaderboards</Link>
       {user && <Link href="/dashboard" style={{ marginLeft: 24 }}>Dashboard</Link>}
       {user && <Link href="/notifications" style={{ marginLeft: 24 }}>Notifications</Link>}
       {user?.is_admin && <Link href="/admin" style={{ marginLeft: 24 }}>Admin</Link>}
