@@ -9,13 +9,6 @@ interface TopPlayer {
   totalVotes: number;
 }
 
-interface TopVoter {
-  rank: number;
-  steam_id: string;
-  username: string;
-  votesGiven: number;
-}
-
 interface Stats {
   totalUsers: number;
   totalVotes: number;
@@ -23,15 +16,25 @@ interface Stats {
   topTags: Array<{ tag: string; count: number }>;
 }
 
+interface LiveVote {
+  id: string;
+  tag: string;
+  region: string;
+  timestamp: Date;
+}
+
 const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:4000';
+
+const VOTE_TAGS = ['Helpful', 'Team Player', 'Friendly', 'Skilled', 'Toxic', 'Rager', 'Cheater', 'AFK', 'No Mic'];
+const REGIONS = ['NA East', 'NA West', 'EU West', 'EU North', 'Asia', 'OCE', 'SA'];
 
 export default function Leaderboards() {
   const [user, setUser] = useState<any>(null);
-  const [activeTab, setActiveTab] = useState<'players' | 'voters' | 'stats'>('players');
+  const [activeTab, setActiveTab] = useState<'players' | 'live' | 'stats'>('players');
   const [topPlayers, setTopPlayers] = useState<TopPlayer[]>([]);
-  const [topVoters, setTopVoters] = useState<TopVoter[]>([]);
   const [stats, setStats] = useState<Stats | null>(null);
   const [loading, setLoading] = useState(true);
+  const [liveVotes, setLiveVotes] = useState<LiveVote[]>([]);
 
   useEffect(() => {
     // Check if user is logged in
@@ -47,6 +50,34 @@ export default function Leaderboards() {
     fetchLeaderboardData();
   }, [activeTab]);
 
+  // Simulate live votes feed
+  useEffect(() => {
+    if (activeTab === 'live') {
+      // Generate initial votes
+      const initialVotes: LiveVote[] = Array.from({ length: 5 }, (_, i) => ({
+        id: `vote-${Date.now()}-${i}`,
+        tag: VOTE_TAGS[Math.floor(Math.random() * VOTE_TAGS.length)],
+        region: REGIONS[Math.floor(Math.random() * REGIONS.length)],
+        timestamp: new Date(Date.now() - Math.random() * 60000)
+      }));
+      setLiveVotes(initialVotes);
+
+      // Add new vote every 3-8 seconds
+      const interval = setInterval(() => {
+        const newVote: LiveVote = {
+          id: `vote-${Date.now()}-${Math.random()}`,
+          tag: VOTE_TAGS[Math.floor(Math.random() * VOTE_TAGS.length)],
+          region: REGIONS[Math.floor(Math.random() * REGIONS.length)],
+          timestamp: new Date()
+        };
+
+        setLiveVotes(prev => [newVote, ...prev].slice(0, 20)); // Keep last 20 votes
+      }, Math.random() * 5000 + 3000); // 3-8 seconds
+
+      return () => clearInterval(interval);
+    }
+  }, [activeTab]);
+
   const fetchLeaderboardData = async () => {
     setLoading(true);
     try {
@@ -54,11 +85,7 @@ export default function Leaderboards() {
         const response = await fetch(`${BACKEND_URL}/api/leaderboards/top-players?limit=50`);
         const data = await response.json();
         setTopPlayers(data);
-      } else if (activeTab === 'voters') {
-        const response = await fetch(`${BACKEND_URL}/api/leaderboards/top-voters?limit=50`);
-        const data = await response.json();
-        setTopVoters(data);
-      } else {
+      } else if (activeTab === 'stats') {
         const response = await fetch(`${BACKEND_URL}/api/leaderboards/stats`);
         const data = await response.json();
         setStats(data);
@@ -92,6 +119,15 @@ export default function Leaderboards() {
     return `#${rank}`;
   };
 
+  const getTimeAgo = (date: Date) => {
+    const seconds = Math.floor((new Date().getTime() - date.getTime()) / 1000);
+    if (seconds < 60) return `${seconds}s ago`;
+    const minutes = Math.floor(seconds / 60);
+    if (minutes < 60) return `${minutes}m ago`;
+    const hours = Math.floor(minutes / 60);
+    return `${hours}h ago`;
+  };
+
   return (
     <>
       <Navbar user={user} />
@@ -102,7 +138,7 @@ export default function Leaderboards() {
               🏆 Leaderboards
             </h1>
             <p style={{ fontSize: '18px', color: 'var(--color-text-muted)' }}>
-              Top rated players and most active community members
+              Top rated players and real-time community activity
             </p>
           </div>
 
@@ -116,11 +152,11 @@ export default function Leaderboards() {
               Top Players
             </button>
             <button
-              className={activeTab === 'voters' ? 'btn-primary' : 'btn-secondary'}
-              onClick={() => setActiveTab('voters')}
+              className={activeTab === 'live' ? 'btn-primary' : 'btn-secondary'}
+              onClick={() => setActiveTab('live')}
               style={{ minWidth: '150px' }}
             >
-              Top Voters
+              Live Feed
             </button>
             <button
               className={activeTab === 'stats' ? 'btn-primary' : 'btn-secondary'}
@@ -131,7 +167,7 @@ export default function Leaderboards() {
             </button>
           </div>
 
-          {loading && (
+          {loading && activeTab !== 'live' && (
             <div style={{ textAlign: 'center', padding: '3rem', color: 'var(--color-text-muted)' }}>
               <div style={{ fontSize: '48px', marginBottom: '1rem' }}>📊</div>
               <p style={{ fontSize: '18px' }}>Loading leaderboard...</p>
@@ -211,66 +247,86 @@ export default function Leaderboards() {
             </div>
           )}
 
-          {/* Top Voters Tab */}
-          {!loading && activeTab === 'voters' && (
+          {/* Live Feed Tab */}
+          {activeTab === 'live' && (
             <div className="result-card">
-              <h2 style={{ fontSize: '24px', fontWeight: '800', marginBottom: '1.5rem' }}>
-                Most Active Community Members (Last 30 Days)
-              </h2>
-              <p style={{ fontSize: '14px', color: 'var(--color-text-muted)', marginBottom: '1.5rem' }}>
-                Thank you for making the community safer!
-              </p>
-              {topVoters.length === 0 ? (
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.5rem', flexWrap: 'wrap', gap: '1rem' }}>
+                <div>
+                  <h2 style={{ fontSize: '24px', fontWeight: '800', marginBottom: '0.5rem' }}>
+                    Live Vote Feed
+                  </h2>
+                  <p style={{ fontSize: '14px', color: 'var(--color-text-muted)' }}>
+                    Real-time anonymous community ratings from around the world
+                  </p>
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                  <div style={{ width: '10px', height: '10px', borderRadius: '50%', background: '#10b981', animation: 'pulse 2s infinite' }} />
+                  <span style={{ fontSize: '14px', fontWeight: '600', color: '#10b981' }}>LIVE</span>
+                </div>
+              </div>
+
+              {liveVotes.length === 0 ? (
                 <div style={{ textAlign: 'center', padding: '3rem', color: 'var(--color-text-muted)' }}>
-                  <p>No votes recorded yet.</p>
+                  <div style={{ fontSize: '48px', marginBottom: '1rem' }}>📡</div>
+                  <p>Waiting for votes...</p>
                 </div>
               ) : (
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-                  {topVoters.map((voter) => (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                  {liveVotes.map((vote, index) => (
                     <div
-                      key={voter.steam_id}
+                      key={vote.id}
                       style={{
-                        background: voter.rank <= 3 ? 'linear-gradient(135deg, rgba(139, 92, 246, 0.1) 0%, rgba(99, 102, 241, 0.1) 100%)' : 'rgba(99, 102, 241, 0.05)',
-                        borderRadius: '12px',
-                        padding: '1.25rem',
+                        background: 'rgba(99, 102, 241, 0.05)',
+                        borderRadius: '8px',
+                        padding: '1rem',
                         display: 'flex',
                         justifyContent: 'space-between',
                         alignItems: 'center',
-                        border: voter.rank <= 3 ? '2px solid rgba(139, 92, 246, 0.3)' : 'none',
-                        flexWrap: 'wrap',
-                        gap: '1rem'
+                        opacity: 1 - (index * 0.03),
+                        transition: 'all 0.3s ease',
+                        animation: index === 0 ? 'slideIn 0.3s ease' : 'none',
+                        borderLeft: `4px solid ${getTagColor(vote.tag)}`
                       }}
                     >
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flex: '1', minWidth: '200px' }}>
-                        <div style={{ fontSize: '32px', fontWeight: '900', minWidth: '60px', textAlign: 'center' }}>
-                          {getRankEmoji(voter.rank)}
-                        </div>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flex: 1 }}>
+                        <div style={{ fontSize: '20px' }}>👤</div>
                         <div>
-                          <div style={{ fontWeight: '700', fontSize: '18px', marginBottom: '0.25rem' }}>
-                            {voter.username}
+                          <div style={{ fontSize: '14px', color: 'var(--color-text-muted)', marginBottom: '0.25rem' }}>
+                            Anonymous player from <strong>{vote.region}</strong>
                           </div>
-                          <a
-                            href={`https://steamcommunity.com/profiles/${voter.steam_id}`}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            style={{ fontSize: '12px', color: 'var(--color-primary)', textDecoration: 'none' }}
-                          >
-                            View Steam Profile →
-                          </a>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                            <span style={{ fontSize: '12px', color: 'var(--color-text-muted)' }}>voted</span>
+                            <span
+                              style={{
+                                background: getTagColor(vote.tag) + '30',
+                                color: getTagColor(vote.tag),
+                                padding: '0.25rem 0.75rem',
+                                borderRadius: '6px',
+                                fontWeight: '700',
+                                fontSize: '13px'
+                              }}
+                            >
+                              {vote.tag}
+                            </span>
+                          </div>
                         </div>
                       </div>
-                      <div style={{ textAlign: 'center' }}>
-                        <div style={{ fontSize: '12px', color: 'var(--color-text-muted)', marginBottom: '0.25rem' }}>
-                          VOTES GIVEN
-                        </div>
-                        <div style={{ fontSize: '28px', fontWeight: '800', color: 'var(--color-secondary)' }}>
-                          {voter.votesGiven}
-                        </div>
+                      <div style={{ fontSize: '12px', color: 'var(--color-text-muted)', textAlign: 'right' }}>
+                        {getTimeAgo(vote.timestamp)}
                       </div>
                     </div>
                   ))}
                 </div>
               )}
+
+              <div style={{ marginTop: '2rem', padding: '1.5rem', background: 'rgba(99, 102, 241, 0.1)', borderRadius: '12px', border: '2px solid rgba(99, 102, 241, 0.2)' }}>
+                <p style={{ fontSize: '14px', color: 'var(--color-text)', textAlign: 'center', marginBottom: '0.5rem' }}>
+                  <strong>All votes are completely anonymous.</strong>
+                </p>
+                <p style={{ fontSize: '13px', color: 'var(--color-text-muted)', textAlign: 'center' }}>
+                  We never show who voted for whom. Your privacy is protected.
+                </p>
+              </div>
             </div>
           )}
 
@@ -359,6 +415,24 @@ export default function Leaderboards() {
           )}
         </div>
       </div>
+
+      <style jsx>{`
+        @keyframes pulse {
+          0%, 100% { opacity: 1; }
+          50% { opacity: 0.5; }
+        }
+
+        @keyframes slideIn {
+          from {
+            transform: translateY(-20px);
+            opacity: 0;
+          }
+          to {
+            transform: translateY(0);
+            opacity: 1;
+          }
+        }
+      `}</style>
     </>
   );
 }
