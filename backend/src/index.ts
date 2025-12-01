@@ -56,6 +56,12 @@ app.get('/', (req, res) => {
 
 // Add /me endpoint to check authentication
 app.get('/me', (req, res) => {
+  console.log('=== /me endpoint hit ===');
+  console.log('Session ID:', req.sessionID);
+  console.log('Session:', req.session);
+  console.log('User:', req.user);
+  console.log('Is authenticated:', req.isAuthenticated ? req.isAuthenticated() : false);
+
   if (req.user) {
     const user = req.user as any;
     res.json({

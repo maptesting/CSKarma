@@ -8,10 +8,21 @@ export default function Home() {
 
   useEffect(() => {
     // Check if user is logged in
+    console.log('Fetching user from:', `${BACKEND_URL}/me`);
     fetch(`${BACKEND_URL}/me`, { credentials: 'include' })
-      .then(res => res.ok ? res.json() : null)
-      .then(data => setUser(data?.user || null))
-      .catch(() => setUser(null));
+      .then(res => {
+        console.log('Response status:', res.status);
+        console.log('Response ok:', res.ok);
+        return res.ok ? res.json() : null;
+      })
+      .then(data => {
+        console.log('User data received:', data);
+        setUser(data?.user || null);
+      })
+      .catch(err => {
+        console.error('Error fetching user:', err);
+        setUser(null);
+      });
   }, []);
 
   return (
