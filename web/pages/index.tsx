@@ -95,99 +95,6 @@ export default function Home() {
     <>
       <Navbar user={user} />
       <div className="home-bg">
-        {/* Live Feed Sidebar - Desktop Only - Outside Container */}
-        <div style={{
-          position: 'fixed',
-          right: '2rem',
-          top: '120px',
-          width: '320px',
-          maxHeight: 'calc(100vh - 140px)',
-          overflowY: 'auto',
-          display: 'none',
-          zIndex: 50
-        }} className="live-feed-sidebar">
-            <div style={{
-              background: 'rgba(255, 255, 255, 0.98)',
-              borderRadius: '16px',
-              padding: '1.5rem',
-              boxShadow: '0 10px 40px rgba(0, 0, 0, 0.1)',
-              border: '2px solid rgba(99, 102, 241, 0.2)'
-            }}>
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1rem' }}>
-                <h3 style={{ fontSize: '16px', fontWeight: '800', margin: 0 }}>
-                  🌍 Live Activity
-                </h3>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                  <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#10b981', animation: 'pulse 2s infinite' }} />
-                  <span style={{ fontSize: '12px', fontWeight: '600', color: '#10b981' }}>LIVE</span>
-                </div>
-              </div>
-              <p style={{ fontSize: '12px', color: 'var(--color-text-muted)', marginBottom: '1rem' }}>
-                Real-time votes from players worldwide
-              </p>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-                {liveVotes.map((vote, index) => (
-                  <div
-                    key={vote.id}
-                    style={{
-                      background: 'rgba(99, 102, 241, 0.05)',
-                      borderRadius: '8px',
-                      padding: '0.75rem',
-                      borderLeft: `3px solid ${getTagColor(vote.tag)}`,
-                      opacity: 1 - (index * 0.1),
-                      transition: 'all 0.3s ease',
-                      animation: index === 0 ? 'slideIn 0.3s ease' : 'none'
-                    }}
-                  >
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.25rem' }}>
-                      <span style={{ fontSize: '14px' }}>👤</span>
-                      <span style={{ fontSize: '11px', color: 'var(--color-text-muted)', fontWeight: '600' }}>
-                        {vote.region}
-                      </span>
-                    </div>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                      <span
-                        style={{
-                          background: getTagColor(vote.tag) + '30',
-                          color: getTagColor(vote.tag),
-                          padding: '0.25rem 0.5rem',
-                          borderRadius: '4px',
-                          fontWeight: '700',
-                          fontSize: '11px'
-                        }}
-                      >
-                        {vote.tag}
-                      </span>
-                      <span style={{ fontSize: '10px', color: 'var(--color-text-muted)' }}>
-                        {getTimeAgo(vote.timestamp)}
-                      </span>
-                    </div>
-                  </div>
-                ))}
-              </div>
-              <a
-                href="/leaderboards"
-                style={{
-                  display: 'block',
-                  textAlign: 'center',
-                  marginTop: '1rem',
-                  padding: '0.75rem',
-                  background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-                  color: 'white',
-                  borderRadius: '8px',
-                  textDecoration: 'none',
-                  fontSize: '13px',
-                  fontWeight: '700',
-                  transition: 'transform 0.2s ease'
-                }}
-                onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.02)'}
-                onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
-              >
-                View Full Feed →
-              </a>
-            </div>
-          </div>
-
         <div className="container" style={{ position: 'relative', marginRight: 'auto', marginLeft: 'auto' }}>
           {/* Main Content */}
           <div style={{ maxWidth: '1180px', margin: '0 auto', paddingRight: '0' }}>
@@ -225,6 +132,100 @@ export default function Home() {
             <div className="stat-card">
               <div className="stat-number">99%</div>
               <div className="stat-label">Accuracy</div>
+            </div>
+          </div>
+
+          {/* Live Feed Section - Horizontal */}
+          <div style={{
+            marginTop: '5rem',
+            background: 'linear-gradient(135deg, rgba(99, 102, 241, 0.05) 0%, rgba(139, 92, 246, 0.05) 100%)',
+            borderRadius: '20px',
+            padding: '2.5rem',
+            border: '2px solid rgba(99, 102, 241, 0.1)'
+          }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '2rem', flexWrap: 'wrap', gap: '1rem' }}>
+              <div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '0.5rem' }}>
+                  <h2 style={{ fontSize: '32px', fontWeight: '900', margin: 0 }}>
+                    🌍 Live Activity Feed
+                  </h2>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                    <div style={{ width: '10px', height: '10px', borderRadius: '50%', background: '#10b981', animation: 'pulse 2s infinite' }} />
+                    <span style={{ fontSize: '14px', fontWeight: '700', color: '#10b981' }}>LIVE</span>
+                  </div>
+                </div>
+                <p style={{ fontSize: '16px', color: 'var(--color-text-muted)', margin: 0 }}>
+                  Real-time votes from players worldwide
+                </p>
+              </div>
+              <a
+                href="/leaderboards"
+                className="btn-primary"
+                style={{
+                  fontSize: '16px',
+                  padding: '0.75rem 1.5rem',
+                  textDecoration: 'none'
+                }}
+              >
+                View Full Feed →
+              </a>
+            </div>
+
+            {/* Horizontal scrolling vote cards */}
+            <div style={{
+              display: 'flex',
+              gap: '1.5rem',
+              overflowX: 'auto',
+              paddingBottom: '1rem',
+              scrollbarWidth: 'thin',
+              scrollbarColor: 'rgba(99, 102, 241, 0.3) rgba(0, 0, 0, 0.05)'
+            }}>
+              {liveVotes.map((vote, index) => (
+                <div
+                  key={vote.id}
+                  style={{
+                    background: 'rgba(255, 255, 255, 0.95)',
+                    borderRadius: '16px',
+                    padding: '1.5rem',
+                    minWidth: '280px',
+                    borderLeft: `4px solid ${getTagColor(vote.tag)}`,
+                    boxShadow: '0 4px 12px rgba(0, 0, 0, 0.08)',
+                    transition: 'all 0.3s ease',
+                    animation: index === 0 ? 'slideIn 0.3s ease' : 'none',
+                    flex: '0 0 auto'
+                  }}
+                >
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1rem' }}>
+                    <span style={{ fontSize: '24px' }}>👤</span>
+                    <div>
+                      <div style={{ fontSize: '12px', color: 'var(--color-text-muted)', fontWeight: '600', marginBottom: '0.25rem' }}>
+                        Anonymous Player
+                      </div>
+                      <div style={{ fontSize: '14px', fontWeight: '700', color: 'var(--color-primary)' }}>
+                        {vote.region}
+                      </div>
+                    </div>
+                  </div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <span
+                      style={{
+                        background: getTagColor(vote.tag) + '20',
+                        color: getTagColor(vote.tag),
+                        padding: '0.5rem 1rem',
+                        borderRadius: '8px',
+                        fontWeight: '700',
+                        fontSize: '14px',
+                        border: `2px solid ${getTagColor(vote.tag)}40`
+                      }}
+                    >
+                      {vote.tag}
+                    </span>
+                    <span style={{ fontSize: '12px', color: 'var(--color-text-muted)', fontWeight: '600' }}>
+                      {getTimeAgo(vote.timestamp)}
+                    </span>
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
 
@@ -327,33 +328,6 @@ export default function Home() {
           }
         }
 
-        .live-feed-sidebar {
-          display: none;
-        }
-
-        @media (min-width: 1800px) {
-          .live-feed-sidebar {
-            display: block !important;
-          }
-        }
-
-        .live-feed-sidebar::-webkit-scrollbar {
-          width: 6px;
-        }
-
-        .live-feed-sidebar::-webkit-scrollbar-track {
-          background: rgba(0, 0, 0, 0.05);
-          border-radius: 10px;
-        }
-
-        .live-feed-sidebar::-webkit-scrollbar-thumb {
-          background: rgba(99, 102, 241, 0.3);
-          border-radius: 10px;
-        }
-
-        .live-feed-sidebar::-webkit-scrollbar-thumb:hover {
-          background: rgba(99, 102, 241, 0.5);
-        }
       `}</style>
     </>
   );
