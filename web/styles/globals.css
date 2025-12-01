@@ -78,13 +78,20 @@ a:hover {
 
 /* Container */
 .container {
-  max-width: 1200px;
+  max-width: 1400px;
   margin: 2rem auto;
-  padding: 2.5rem;
+  padding: 3rem 4rem;
   background: var(--color-card);
   border-radius: 20px;
   box-shadow: var(--shadow-xl);
   border: 1px solid var(--color-border);
+}
+
+@media (max-width: 1400px) {
+  .container {
+    max-width: 1200px;
+    padding: 2.5rem;
+  }
 }
 
 /* Buttons */
@@ -145,7 +152,15 @@ a:hover {
   background: rgba(255, 255, 255, 0.98);
   backdrop-filter: blur(20px);
   border: 1px solid rgba(255, 255, 255, 0.3);
-  max-width: 900px;
+  max-width: 1600px;
+  padding: 4rem 5rem;
+}
+
+@media (max-width: 1400px) {
+  .home-bg .container {
+    max-width: 1200px;
+    padding: 3rem 4rem;
+  }
 }
 
 .home-title {

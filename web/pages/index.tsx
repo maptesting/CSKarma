@@ -95,19 +95,17 @@ export default function Home() {
     <>
       <Navbar user={user} />
       <div className="home-bg">
-        <div className="container" style={{ position: 'relative' }}>
+        <div className="container" style={{ position: 'relative', marginRight: 'auto', marginLeft: 'auto' }}>
           {/* Live Feed Sidebar - Desktop Only */}
           <div style={{
             position: 'fixed',
-            right: '2rem',
+            right: 'max(2rem, calc((100vw - 1600px) / 2))',
             top: '120px',
-            width: '320px',
+            width: '340px',
             maxHeight: 'calc(100vh - 140px)',
             overflowY: 'auto',
             display: 'none',
-            '@media (min-width: 1400px)': {
-              display: 'block'
-            }
+            zIndex: 50
           }} className="live-feed-sidebar">
             <div style={{
               background: 'rgba(255, 255, 255, 0.98)',
@@ -192,30 +190,30 @@ export default function Home() {
           </div>
 
           {/* Main Content */}
-          <div style={{ maxWidth: '1100px', margin: '0 auto' }}>
-            <h1 className="home-title">
+          <div style={{ maxWidth: '1180px', margin: '0 auto', paddingRight: '0' }}>
+            <h1 className="home-title" style={{ fontSize: '72px', marginBottom: '2rem' }}>
               Know Your Teammates Before The Match Starts
             </h1>
-            <p className="home-subtitle">
+            <p className="home-subtitle" style={{ fontSize: '28px', marginBottom: '2rem' }}>
               Stop wasting 45 minutes with toxic players. Make informed decisions.
             </p>
-            <p className="home-desc">
+            <p className="home-desc" style={{ fontSize: '22px', marginBottom: '3rem', maxWidth: '900px' }}>
               CommSafe is a <strong>shared, community-driven database</strong> that shows you real teammate behavior ratings before you commit. See toxic warnings from hundreds of other players—not just your own history.
             </p>
-            <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap', marginBottom: '2rem' }}>
-              <a href={`${BACKEND_URL}/auth/steam`} className="btn-primary home-login">
+            <div style={{ display: 'flex', gap: '1.5rem', justifyContent: 'center', flexWrap: 'wrap', marginBottom: '2.5rem' }}>
+              <a href={`${BACKEND_URL}/auth/steam`} className="btn-primary home-login" style={{ fontSize: '22px', padding: '1.25rem 3rem' }}>
                 <span>🎮</span> Login with Steam - It's Free
               </a>
-              <a href="/search" className="btn-secondary" style={{ padding: '1rem 2rem', fontSize: '18px', fontWeight: '700' }}>
+              <a href="/search" className="btn-secondary" style={{ padding: '1.25rem 3rem', fontSize: '22px', fontWeight: '700' }}>
                 Try a Search First
               </a>
             </div>
-            <p style={{ fontSize: '14px', color: 'var(--color-text-muted)', textAlign: 'center', maxWidth: '600px', margin: '0 auto' }}>
+            <p style={{ fontSize: '16px', color: 'var(--color-text-muted)', textAlign: 'center', maxWidth: '800px', margin: '0 auto' }}>
               ✓ Shared global database · ✓ AI-filtered ratings · ✓ 30-day rolling data · ✓ Anonymous voting
             </p>
           </div>
 
-          <div className="stats-grid">
+          <div className="stats-grid" style={{ marginTop: '5rem', gap: '3rem' }}>
             <div className="stat-card">
               <div className="stat-number">10K+</div>
               <div className="stat-label">Players Rated</div>
@@ -231,16 +229,16 @@ export default function Home() {
           </div>
 
           {/* Value Props Section */}
-          <div style={{ marginTop: '4rem', marginBottom: '3rem', textAlign: 'center' }}>
-            <h2 style={{ fontSize: '36px', fontWeight: '900', marginBottom: '1rem', background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+          <div style={{ marginTop: '6rem', marginBottom: '4rem', textAlign: 'center' }}>
+            <h2 style={{ fontSize: '48px', fontWeight: '900', marginBottom: '1.5rem', background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
               What Can You Actually Do With This Data?
             </h2>
-            <p style={{ fontSize: '18px', color: 'var(--color-text-muted)', maxWidth: '700px', margin: '0 auto 2rem' }}>
+            <p style={{ fontSize: '22px', color: 'var(--color-text-muted)', maxWidth: '900px', margin: '0 auto 2rem' }}>
               CommSafe gives you actionable intelligence for better match outcomes
             </p>
           </div>
 
-          <div className="features-grid">
+          <div className="features-grid" style={{ gap: '3rem', marginBottom: '6rem' }}>
             <div className="feature-card">
               <div className="feature-icon">🎯</div>
               <h3 className="feature-title">Make Informed Dodge Decisions</h3>
@@ -286,13 +284,13 @@ export default function Home() {
           </div>
 
           {/* How It Works Section */}
-          <div style={{ marginTop: '4rem', marginBottom: '2rem', textAlign: 'center' }}>
-            <h2 style={{ fontSize: '36px', fontWeight: '900', marginBottom: '2rem', background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+          <div style={{ marginTop: '6rem', marginBottom: '3rem', textAlign: 'center' }}>
+            <h2 style={{ fontSize: '48px', fontWeight: '900', marginBottom: '2rem', background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
               How CommSafe Works
             </h2>
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '2rem', marginBottom: '3rem' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))', gap: '3rem', marginBottom: '4rem' }}>
             <div style={{ background: 'rgba(255, 255, 255, 0.95)', borderRadius: '20px', padding: '2rem', textAlign: 'center', border: '2px solid var(--color-primary)' }}>
               <div style={{ fontSize: '48px', marginBottom: '1rem' }}>1️⃣</div>
               <h3 style={{ fontSize: '20px', fontWeight: '700', marginBottom: '1rem' }}>Play & Rate</h3>
