@@ -1,5 +1,5 @@
 // Configuration - can be changed via extension settings
-const BACKEND_URL = 'http://localhost:4000'; // TODO: Make this configurable via extension settings
+const BACKEND_URL = 'https://cskarma-production.up.railway.app';
 
 // Where to inject on Steam profile
 function getPlayerNameElement() {
