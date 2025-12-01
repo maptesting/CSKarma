@@ -31,14 +31,28 @@ function createVoteBtn(steamId) {
 }
 
 function injectOverlay(score, warning, steamId) {
+  console.log('💉 injectOverlay called with:', { score, warning, steamId });
+
   const nameElem = getPlayerNameElement();
-  if (!nameElem) return;
-  if (document.getElementById('karma-vibe-root')) return;
+  console.log('👤 Player name element:', nameElem);
+
+  if (!nameElem) {
+    console.log('❌ No player name element found, cannot inject');
+    return;
+  }
+
+  if (document.getElementById('karma-vibe-root')) {
+    console.log('⚠️ Already injected, skipping');
+    return;
+  }
+
   const root = document.createElement('span');
   root.id = 'karma-vibe-root';
   root.appendChild(createBadge(score, warning));
   root.appendChild(createVoteBtn(steamId));
   nameElem.parentNode.appendChild(root);
+
+  console.log('✅ Successfully injected vibe badge!');
 }
 
 function openVoteModal(steamId) {
@@ -162,11 +176,58 @@ function fetchScore(steamId, cb) {
 }
 
 function initKarmaVibeOverlay() {
+  console.log('🎯 initKarmaVibeOverlay called');
+  console.log('📍 Current pathname:', window.location.pathname);
+
   const urlParts = window.location.pathname.split('/');
+  console.log('📊 URL parts:', urlParts);
+
   let steamId = null;
-  if (urlParts[1] === 'id' || urlParts[1] === 'profiles') steamId = urlParts[2];
-  if (!steamId) return;
+  if (urlParts[1] === 'id' || urlParts[1] === 'profiles') {
+    steamId = urlParts[2];
+    console.log('✅ Found Steam ID:', steamId);
+  } else {
+    console.log('⚠️ Not a profile page, skipping');
+  }
+
+  if (!steamId) {
+    console.log('❌ No Steam ID found, exiting');
+    return;
+  }
+
+  console.log('🔍 Fetching score for Steam ID:', steamId);
   fetchScore(steamId, injectOverlay);
 }
 
-window.addEventListener('DOMContentLoaded', initKarmaVibeOverlay);
+// Try multiple initialization methods to ensure the script runs
+// 1. If DOM is already loaded, run immediately
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initKarmaVibeOverlay);
+} else {
+  // DOM already loaded, run now
+  initKarmaVibeOverlay();
+}
+
+// 2. Also try on full page load as backup
+window.addEventListener('load', function() {
+  // Only inject if not already injected
+  if (!document.getElementById('karma-vibe-root')) {
+    initKarmaVibeOverlay();
+  }
+});
+
+// 3. Watch for URL changes (Steam uses AJAX navigation)
+let lastUrl = window.location.href;
+new MutationObserver(() => {
+  const currentUrl = window.location.href;
+  if (currentUrl !== lastUrl) {
+    lastUrl = currentUrl;
+    console.log('🔄 URL changed to:', currentUrl);
+    // Wait a bit for the new page to load
+    setTimeout(() => {
+      if (!document.getElementById('karma-vibe-root')) {
+        initKarmaVibeOverlay();
+      }
+    }, 1000);
+  }
+}).observe(document, { subtree: true, childList: true });
