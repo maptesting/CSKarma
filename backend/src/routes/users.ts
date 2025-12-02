@@ -49,4 +49,47 @@ router.post('/', async (req, res) => {
   res.status(201).json(data);
 });
 
+// Create/get user by Faceit ID
+router.post('/faceit', async (req, res) => {
+  const { faceit_id, nickname } = req.body;
+
+  // Input validation
+  if (!faceit_id) {
+    return res.status(400).json({ error: 'faceit_id is required' });
+  }
+
+  if (faceit_id.length > 100) {
+    return res.status(400).json({ error: 'faceit_id must be 100 characters or less' });
+  }
+
+  if (nickname && nickname.length > 100) {
+    return res.status(400).json({ error: 'nickname must be 100 characters or less' });
+  }
+
+  // Check if user already exists with this Faceit ID
+  const { data: existing } = await supabase
+    .from('users')
+    .select('*')
+    .eq('faceit_id', faceit_id)
+    .single();
+
+  if (existing) {
+    return res.json(existing);
+  }
+
+  // Create new user with Faceit ID
+  const { data, error } = await supabase
+    .from('users')
+    .insert({
+      faceit_id,
+      username: nickname || faceit_id,
+      steam_id: null  // Faceit users don't have Steam ID initially
+    })
+    .select()
+    .single();
+
+  if (error) return res.status(400).json({ error: error.message });
+  res.status(201).json(data);
+});
+
 export default router;

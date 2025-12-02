@@ -98,4 +98,71 @@ router.get('/:steamIdOrVanity', async (req, res) => {
   }
 });
 
+/**
+ * Lookup Faceit user by Faceit ID
+ * Returns user info + vibe score if they have ratings
+ */
+router.get('/faceit/:faceitId', async (req, res) => {
+  const { faceitId } = req.params;
+
+  try {
+    // Check if user exists in our database with this Faceit ID
+    const { data: dbUser } = await supabase
+      .from('users')
+      .select('id, username, faceit_id')
+      .eq('faceit_id', faceitId)
+      .single();
+
+    let vibeScore = null;
+    let warning = null;
+    let tags: string[] = [];
+    let username = faceitId;
+
+    // If user exists in database, fetch their ratings
+    if (dbUser) {
+      username = dbUser.username || faceitId;
+
+      // Get vibe score
+      const { data: scoreData } = await supabase
+        .from('votes')
+        .select('tag, created_at')
+        .eq('target_id', dbUser.id);
+
+      if (scoreData && scoreData.length > 0) {
+        // Calculate vibe score (last 30 days)
+        const cutoff = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
+        const recent = scoreData.filter((v) => new Date(v.created_at) > cutoff);
+
+        const ratingMap = { Helpful: 5, 'No Mic': 3, Rager: 2, Toxic: 1 } as const;
+        const scores = recent.map((v) => ratingMap[v.tag as keyof typeof ratingMap] ?? 3);
+        const avg = scores.length > 0 ? scores.reduce((a, b) => a + b, 0) / scores.length : null;
+        vibeScore = avg ? Number(avg.toFixed(2)) : null;
+
+        // Check for toxic warning
+        const toxicCount = recent.filter((v) => v.tag === 'Toxic').length;
+        if (toxicCount >= 10) {
+          warning = `Warning: flagged as toxic by ${toxicCount} users in the last month!`;
+        }
+
+        // Get unique tags
+        tags = [...new Set(recent.map((v) => v.tag))];
+      }
+    }
+
+    // Return combined data
+    res.json({
+      faceit_id: faceitId,
+      username,
+      vibeScore,
+      warning,
+      tags,
+      hasRatings: !!dbUser
+    });
+
+  } catch (error: any) {
+    console.error('Faceit lookup error:', error);
+    res.status(500).json({ error: 'Failed to lookup Faceit player', details: error.message });
+  }
+});
+
 export default router;

@@ -14,6 +14,7 @@
   "host_permissions": [
     "https://steamcommunity.com/id/*",
     "https://steamcommunity.com/profiles/*",
+    "https://www.faceit.com/*",
     "https://cskarma-production.up.railway.app/*"
   ],
   "background": {
@@ -23,6 +24,11 @@
     {
       "matches": ["https://steamcommunity.com/id/*", "https://steamcommunity.com/profiles/*"],
       "js": ["contentScript.js"],
+      "css": ["contentStyles.css"]
+    },
+    {
+      "matches": ["https://www.faceit.com/*/players/*", "https://www.faceit.com/*/players-modal/*"],
+      "js": ["faceitContentScript.js"],
       "css": ["contentStyles.css"]
     }
   ],
