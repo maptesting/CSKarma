@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Navbar from '../components/Navbar';
 import { useRouter } from 'next/router';
 
@@ -20,7 +20,7 @@ export default function MatchCheck() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
-  useState(() => {
+  useEffect(() => {
     const storedUser = localStorage.getItem('user');
     if (storedUser) {
       try {
@@ -29,7 +29,7 @@ export default function MatchCheck() {
         console.error('Failed to parse user:', e);
       }
     }
-  });
+  }, []);
 
   const handleCheck = async () => {
     setLoading(true);
