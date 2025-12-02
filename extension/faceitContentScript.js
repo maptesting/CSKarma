@@ -63,14 +63,6 @@ function createVoteBtn(faceitId, nickname) {
 function injectOverlay(score, warning, faceitId, nickname) {
   console.log('💉 injectOverlay called with:', { score, warning, faceitId, nickname });
 
-  const nameElem = getPlayerNameElement();
-  console.log('👤 Player name element:', nameElem);
-
-  if (!nameElem) {
-    console.log('❌ No player name element found, cannot inject');
-    return;
-  }
-
   if (document.getElementById('karma-vibe-root')) {
     console.log('⚠️ Already injected, skipping');
     return;
@@ -78,14 +70,40 @@ function injectOverlay(score, warning, faceitId, nickname) {
 
   const root = document.createElement('div');
   root.id = 'karma-vibe-root';
-  root.style.marginTop = '10px';
   root.appendChild(createBadge(score, warning));
   root.appendChild(createVoteBtn(faceitId, nickname));
 
-  // Insert after the name element
-  nameElem.parentNode.insertBefore(root, nameElem.nextSibling);
+  const nameElem = getPlayerNameElement();
+  console.log('👤 Player name element:', nameElem);
 
-  console.log('✅ Successfully injected vibe badge!');
+  if (nameElem) {
+    // Found a good place to inject - insert inline
+    root.style.marginTop = '10px';
+    root.style.marginBottom = '10px';
+
+    // Try to insert after the name element's parent container for better positioning
+    const container = nameElem.parentNode;
+    if (container && container.parentNode) {
+      container.parentNode.insertBefore(root, container.nextSibling);
+      console.log('✅ Successfully injected vibe badge after container!');
+    } else {
+      nameElem.parentNode.insertBefore(root, nameElem.nextSibling);
+      console.log('✅ Successfully injected vibe badge!');
+    }
+  } else {
+    // Fallback: Create a floating badge in top-right corner
+    console.log('⚠️ No anchor element found, using floating badge');
+    root.style.position = 'fixed';
+    root.style.top = '80px';
+    root.style.right = '20px';
+    root.style.zIndex = '10000';
+    root.style.background = 'rgba(0, 0, 0, 0.9)';
+    root.style.padding = '15px';
+    root.style.borderRadius = '12px';
+    root.style.boxShadow = '0 4px 12px rgba(0,0,0,0.3)';
+    document.body.appendChild(root);
+    console.log('✅ Successfully injected floating vibe badge!');
+  }
 }
 
 function openVoteModal(faceitId, nickname) {
@@ -233,7 +251,18 @@ function extractFaceitId() {
 
 function extractNickname() {
   const nameElem = getPlayerNameElement();
-  return nameElem ? nameElem.textContent.trim() : 'Unknown';
+  if (nameElem) {
+    return nameElem.textContent.trim();
+  }
+
+  // Fallback: try to extract from page title or meta tags
+  const pageTitle = document.title;
+  const titleMatch = pageTitle.match(/^([^\|\-]+)/);
+  if (titleMatch) {
+    return titleMatch[1].trim();
+  }
+
+  return 'Unknown';
 }
 
 function initKarmaVibeOverlay() {
