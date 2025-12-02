@@ -107,25 +107,69 @@ export default function Home() {
       <Navbar user={user} />
       <div className="home-bg">
         <div className="container" style={{ position: 'relative', marginRight: 'auto', marginLeft: 'auto' }}>
-          {/* Main Content */}
+          {/* Hero Section */}
           <div style={{ maxWidth: '1180px', margin: '0 auto', paddingRight: '0' }}>
-            <h1 className="home-title" style={{ fontSize: '64px', marginBottom: '2rem', letterSpacing: '-2px' }}>
-              Know your CS2 teammates before the knife round
+            {/* Logo */}
+            <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
+              <img
+                src="/logo.png"
+                alt="CommSafe Logo"
+                style={{
+                  width: '120px',
+                  height: '120px',
+                  filter: 'drop-shadow(0 0 20px rgba(255, 107, 53, 0.4))',
+                  animation: 'float 3s ease-in-out infinite'
+                }}
+              />
+            </div>
+
+            <h1 className="home-title" style={{ fontSize: '64px', marginBottom: '2rem', letterSpacing: '-2px', lineHeight: '1.1' }}>
+              Know your CS2 teammates <br/>before the knife round
             </h1>
-            <p className="home-subtitle" style={{ fontSize: '24px', marginBottom: '2rem', lineHeight: '1.5' }}>
+            <p className="home-subtitle" style={{ fontSize: '24px', marginBottom: '2rem', lineHeight: '1.5', maxWidth: '900px', margin: '0 auto 2rem' }}>
               Community-driven reputation system for Counter-Strike 2. Dodge toxic lobbies, pre-mute ragers, and adapt your strats based on real player data.
             </p>
-            <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap', marginBottom: '2.5rem' }}>
-              <a href={`${BACKEND_URL}/auth/steam`} className="btn-primary home-login" style={{ fontSize: '16px', padding: '0.875rem 2rem' }}>
-                Get Started
+            <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap', marginBottom: '1.5rem' }}>
+              <a href={`${BACKEND_URL}/auth/steam`} className="btn-primary home-login" style={{ fontSize: '18px', padding: '1rem 2.5rem', fontWeight: '700' }}>
+                Get Started Free
               </a>
-              <a href="/search" className="btn-secondary" style={{ padding: '0.875rem 2rem', fontSize: '16px', fontWeight: '600' }}>
+              <a href="/search" className="btn-secondary" style={{ padding: '1rem 2.5rem', fontSize: '18px', fontWeight: '700' }}>
                 Search Players
               </a>
             </div>
-            <p style={{ fontSize: '14px', color: 'var(--color-text-muted)', textAlign: 'center', maxWidth: '800px', margin: '0 auto', letterSpacing: '0.3px' }}>
+            <p style={{ fontSize: '14px', color: 'var(--color-text-muted)', textAlign: 'center', maxWidth: '800px', margin: '0 auto 3rem', letterSpacing: '0.3px' }}>
               Global database • AI anti-abuse • 30-day rolling window • Anonymous ratings
             </p>
+
+            {/* Hero Screenshot Placeholder */}
+            <div style={{
+              margin: '4rem auto',
+              maxWidth: '1000px',
+              background: 'rgba(15, 23, 42, 0.8)',
+              borderRadius: '16px',
+              padding: '3rem',
+              border: '2px solid rgba(255, 107, 53, 0.3)',
+              boxShadow: '0 20px 60px rgba(0, 0, 0, 0.5)',
+              position: 'relative',
+              minHeight: '500px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center'
+            }}>
+              <div style={{ textAlign: 'center' }}>
+                <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="rgba(255, 107, 53, 0.3)" strokeWidth="1" style={{ margin: '0 auto 1.5rem' }}>
+                  <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                  <circle cx="8.5" cy="8.5" r="1.5"/>
+                  <polyline points="21 15 16 10 5 21"/>
+                </svg>
+                <p style={{ color: 'rgba(255, 107, 53, 0.5)', fontSize: '16px', fontWeight: '600' }}>
+                  DASHBOARD SCREENSHOT
+                </p>
+                <p style={{ color: '#64748b', fontSize: '14px', marginTop: '0.5rem' }}>
+                  Place your dashboard/main interface screenshot here
+                </p>
+              </div>
+            </div>
           </div>
 
           <div className="stats-grid" style={{ marginTop: '5rem', gap: '3rem' }}>
@@ -313,36 +357,162 @@ export default function Home() {
           </div>
 
           {/* How It Works Section */}
-          <div style={{ marginTop: '6rem', marginBottom: '3rem', textAlign: 'center' }}>
-            <h2 style={{ fontSize: '40px', fontWeight: '700', marginBottom: '1rem', color: '#e2e8f0', letterSpacing: '-0.5px' }}>
+          <div style={{ marginTop: '8rem', marginBottom: '4rem', textAlign: 'center' }}>
+            <h2 style={{ fontSize: '48px', fontWeight: '700', marginBottom: '1.5rem', color: '#e2e8f0', letterSpacing: '-1px' }}>
               How it works
             </h2>
-            <p style={{ fontSize: '18px', color: '#94a3b8', maxWidth: '600px', margin: '0 auto' }}>
+            <p style={{ fontSize: '20px', color: '#94a3b8', maxWidth: '700px', margin: '0 auto' }}>
               Three simple steps to safer matches
             </p>
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '2rem', marginBottom: '6rem' }}>
-            <div className="how-it-works-card" style={{ background: 'rgba(30, 41, 59, 0.6)', borderRadius: '10px', padding: '2rem', textAlign: 'center', border: '1px solid rgba(51, 65, 85, 0.8)', transition: 'all 0.3s ease' }}>
-              <div style={{ width: '56px', height: '56px', borderRadius: '50%', background: 'linear-gradient(135deg, #ff6b35 0%, #e55a2b 100%)', margin: '0 auto 1.5rem', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontWeight: '700', fontSize: '24px', boxShadow: '0 0 20px rgba(255, 107, 53, 0.4)' }}>1</div>
-              <h3 style={{ fontSize: '18px', fontWeight: '600', marginBottom: '0.75rem', color: '#e2e8f0' }}>Play & Rate</h3>
-              <p style={{ color: '#94a3b8', fontSize: '15px', lineHeight: '1.6' }}>After a match, rate your teammates anonymously. Tag them as Helpful, Toxic, Team Player, Cheater, etc.</p>
+          {/* Step 1 with Screenshot */}
+          <div style={{ marginBottom: '8rem', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '4rem', alignItems: 'center' }}>
+            <div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1.5rem' }}>
+                <div style={{ width: '56px', height: '56px', borderRadius: '50%', background: 'linear-gradient(135deg, #ff6b35 0%, #e55a2b 100%)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontWeight: '700', fontSize: '24px', boxShadow: '0 0 20px rgba(255, 107, 53, 0.4)', flexShrink: 0 }}>1</div>
+                <h3 style={{ fontSize: '32px', fontWeight: '700', color: '#e2e8f0', margin: 0 }}>Play & Rate</h3>
+              </div>
+              <p style={{ color: '#94a3b8', fontSize: '18px', lineHeight: '1.7', marginBottom: '1.5rem' }}>
+                After a match, rate your teammates anonymously. Tag them with CS2-specific ratings like Team Player, Clutch Master, Toxic, Rage Quit, and more.
+              </p>
+              <ul style={{ color: '#94a3b8', fontSize: '16px', lineHeight: '1.8', paddingLeft: '1.5rem' }}>
+                <li>Anonymous voting system</li>
+                <li>15+ CS2-specific rating tags</li>
+                <li>Takes 30 seconds after each match</li>
+              </ul>
             </div>
-            <div className="how-it-works-card" style={{ background: 'rgba(30, 41, 59, 0.6)', borderRadius: '10px', padding: '2rem', textAlign: 'center', border: '1px solid rgba(51, 65, 85, 0.8)', transition: 'all 0.3s ease' }}>
-              <div style={{ width: '56px', height: '56px', borderRadius: '50%', background: 'linear-gradient(135deg, #00d9ff 0%, #00b8d4 100%)', margin: '0 auto 1.5rem', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontWeight: '700', fontSize: '24px', boxShadow: '0 0 20px rgba(0, 217, 255, 0.4)' }}>2</div>
-              <h3 style={{ fontSize: '18px', fontWeight: '600', marginBottom: '0.75rem', color: '#e2e8f0' }}>Community Builds Database</h3>
-              <p style={{ color: '#94a3b8', fontSize: '15px', lineHeight: '1.6' }}>Your ratings join thousands of others. The more people contribute, the more accurate the vibe scores become.</p>
+            <div style={{
+              background: 'rgba(15, 23, 42, 0.8)',
+              borderRadius: '12px',
+              padding: '2rem',
+              border: '2px solid rgba(255, 107, 53, 0.2)',
+              boxShadow: '0 10px 40px rgba(0, 0, 0, 0.4)',
+              minHeight: '350px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center'
+            }}>
+              <div style={{ textAlign: 'center' }}>
+                <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="rgba(255, 107, 53, 0.3)" strokeWidth="1" style={{ margin: '0 auto 1rem' }}>
+                  <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                  <circle cx="8.5" cy="8.5" r="1.5"/>
+                  <polyline points="21 15 16 10 5 21"/>
+                </svg>
+                <p style={{ color: 'rgba(255, 107, 53, 0.5)', fontSize: '14px', fontWeight: '600' }}>RATING INTERFACE SCREENSHOT</p>
+              </div>
             </div>
-            <div className="how-it-works-card" style={{ background: 'rgba(30, 41, 59, 0.6)', borderRadius: '10px', padding: '2rem', textAlign: 'center', border: '1px solid rgba(51, 65, 85, 0.8)', transition: 'all 0.3s ease' }}>
-              <div style={{ width: '56px', height: '56px', borderRadius: '50%', background: 'linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%)', margin: '0 auto 1.5rem', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontWeight: '700', fontSize: '24px', boxShadow: '0 0 20px rgba(124, 58, 237, 0.4)' }}>3</div>
-              <h3 style={{ fontSize: '18px', fontWeight: '600', marginBottom: '0.75rem', color: '#e2e8f0' }}>See Scores Everywhere</h3>
-              <p style={{ color: '#94a3b8', fontSize: '15px', lineHeight: '1.6' }}>Use our Chrome extension to see vibe scores on Steam profiles instantly. Or search any player before accepting a match.</p>
+          </div>
+
+          {/* Step 2 with Screenshot - Reversed */}
+          <div style={{ marginBottom: '8rem', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '4rem', alignItems: 'center' }}>
+            <div style={{
+              background: 'rgba(15, 23, 42, 0.8)',
+              borderRadius: '12px',
+              padding: '2rem',
+              border: '2px solid rgba(0, 217, 255, 0.2)',
+              boxShadow: '0 10px 40px rgba(0, 0, 0, 0.4)',
+              minHeight: '350px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center'
+            }}>
+              <div style={{ textAlign: 'center' }}>
+                <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="rgba(0, 217, 255, 0.3)" strokeWidth="1" style={{ margin: '0 auto 1rem' }}>
+                  <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                  <circle cx="8.5" cy="8.5" r="1.5"/>
+                  <polyline points="21 15 16 10 5 21"/>
+                </svg>
+                <p style={{ color: 'rgba(0, 217, 255, 0.5)', fontSize: '14px', fontWeight: '600' }}>LEADERBOARD SCREENSHOT</p>
+              </div>
             </div>
+            <div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1.5rem' }}>
+                <div style={{ width: '56px', height: '56px', borderRadius: '50%', background: 'linear-gradient(135deg, #00d9ff 0%, #00b8d4 100%)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontWeight: '700', fontSize: '24px', boxShadow: '0 0 20px rgba(0, 217, 255, 0.4)', flexShrink: 0 }}>2</div>
+                <h3 style={{ fontSize: '32px', fontWeight: '700', color: '#e2e8f0', margin: 0 }}>Community Builds Database</h3>
+              </div>
+              <p style={{ color: '#94a3b8', fontSize: '18px', lineHeight: '1.7', marginBottom: '1.5rem' }}>
+                Your ratings join thousands of others. The more people contribute, the more accurate the vibe scores become. AI filtering prevents abuse from party stacks.
+              </p>
+              <ul style={{ color: '#94a3b8', fontSize: '16px', lineHeight: '1.8', paddingLeft: '1.5rem' }}>
+                <li>10K+ players already tracked</li>
+                <li>50K+ community ratings</li>
+                <li>AI-powered anti-abuse protection</li>
+              </ul>
+            </div>
+          </div>
+
+          {/* Step 3 with Screenshot */}
+          <div style={{ marginBottom: '8rem', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '4rem', alignItems: 'center' }}>
+            <div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1.5rem' }}>
+                <div style={{ width: '56px', height: '56px', borderRadius: '50%', background: 'linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontWeight: '700', fontSize: '24px', boxShadow: '0 0 20px rgba(124, 58, 237, 0.4)', flexShrink: 0 }}>3</div>
+                <h3 style={{ fontSize: '32px', fontWeight: '700', color: '#e2e8f0', margin: 0 }}>Check Players Instantly</h3>
+              </div>
+              <p style={{ color: '#94a3b8', fontSize: '18px', lineHeight: '1.7', marginBottom: '1.5rem' }}>
+                Search any Steam ID before accepting a match. See vibe scores, recent tags, and warning flags. Make informed decisions about who you play with.
+              </p>
+              <ul style={{ color: '#94a3b8', fontSize: '16px', lineHeight: '1.8', paddingLeft: '1.5rem' }}>
+                <li>Instant player lookups</li>
+                <li>See vibe scores from 1-5 stars</li>
+                <li>Warning flags for toxic players</li>
+              </ul>
+            </div>
+            <div style={{
+              background: 'rgba(15, 23, 42, 0.8)',
+              borderRadius: '12px',
+              padding: '2rem',
+              border: '2px solid rgba(124, 58, 237, 0.2)',
+              boxShadow: '0 10px 40px rgba(0, 0, 0, 0.4)',
+              minHeight: '350px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center'
+            }}>
+              <div style={{ textAlign: 'center' }}>
+                <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="rgba(124, 58, 237, 0.3)" strokeWidth="1" style={{ margin: '0 auto 1rem' }}>
+                  <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                  <circle cx="8.5" cy="8.5" r="1.5"/>
+                  <polyline points="21 15 16 10 5 21"/>
+                </svg>
+                <p style={{ color: 'rgba(124, 58, 237, 0.5)', fontSize: '14px', fontWeight: '600' }}>SEARCH RESULTS SCREENSHOT</p>
+              </div>
+            </div>
+          </div>
+
+          {/* CTA Section */}
+          <div style={{
+            marginTop: '8rem',
+            marginBottom: '6rem',
+            background: 'linear-gradient(135deg, rgba(255, 107, 53, 0.1) 0%, rgba(0, 217, 255, 0.1) 100%)',
+            borderRadius: '16px',
+            padding: '4rem 2rem',
+            textAlign: 'center',
+            border: '2px solid rgba(255, 107, 53, 0.3)'
+          }}>
+            <h2 style={{ fontSize: '48px', fontWeight: '700', marginBottom: '1.5rem', color: '#e2e8f0', letterSpacing: '-1px' }}>
+              Ready to improve your CS2 experience?
+            </h2>
+            <p style={{ fontSize: '20px', color: '#94a3b8', maxWidth: '700px', margin: '0 auto 2.5rem', lineHeight: '1.6' }}>
+              Join thousands of CS2 players making smarter lobby decisions
+            </p>
+            <a href={`${BACKEND_URL}/auth/steam`} className="btn-primary" style={{ fontSize: '20px', padding: '1.25rem 3rem', fontWeight: '700', display: 'inline-block', textDecoration: 'none' }}>
+              Get Started Free
+            </a>
           </div>
         </div>
       </div>
 
       <style jsx>{`
+        @keyframes float {
+          0%, 100% {
+            transform: translateY(0px);
+          }
+          50% {
+            transform: translateY(-10px);
+          }
+        }
+
         @keyframes pulse {
           0%, 100% { opacity: 1; }
           50% { opacity: 0.5; }
@@ -378,6 +548,18 @@ export default function Home() {
           to {
             opacity: 1;
             transform: scale(1);
+          }
+        }
+
+        @media (max-width: 768px) {
+          .home-title {
+            font-size: 42px !important;
+          }
+          .home-subtitle {
+            font-size: 18px !important;
+          }
+          div[style*="gridTemplateColumns: '1fr 1fr'"] {
+            grid-template-columns: 1fr !important;
           }
         }
 
