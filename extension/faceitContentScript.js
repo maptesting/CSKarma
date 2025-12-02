@@ -3,7 +3,43 @@ const BACKEND_URL = 'https://cskarma-production.up.railway.app';
 
 console.log('🛡️ CommSafe Faceit extension loaded! URL:', window.location.href);
 
-// Where to inject on Faceit profile
+// Where to inject on Faceit profile - look for action buttons area
+function getInjectionPoint() {
+  // Try to find the SHARE/GIFT SUB button container
+  const selectors = [
+    'button[aria-label*="SHARE"]',
+    'button:has-text("SHARE")',
+    '[class*="profile"] button',
+    '[class*="member-since"]'
+  ];
+
+  console.log('🔍 Searching for injection point near SHARE button...');
+
+  // Look for elements containing "SHARE" text
+  const buttons = Array.from(document.querySelectorAll('button'));
+  const shareButton = buttons.find(btn => btn.textContent.includes('SHARE'));
+
+  if (shareButton) {
+    console.log('✅ Found SHARE button:', shareButton);
+    // Find the parent container that holds both SHARE and GIFT SUB
+    const container = shareButton.closest('div');
+    if (container) {
+      console.log('✅ Found button container');
+      return container;
+    }
+  }
+
+  // Fallback: try to find any action button area
+  const giftButton = buttons.find(btn => btn.textContent.includes('GIFT'));
+  if (giftButton) {
+    console.log('✅ Found GIFT button');
+    return giftButton.closest('div');
+  }
+
+  console.log('❌ Could not find injection point near buttons');
+  return null;
+}
+
 function getPlayerNameElement() {
   // Faceit profile page selectors - try multiple approaches
   const selectors = [
@@ -36,7 +72,6 @@ function getPlayerNameElement() {
   }
 
   console.log('❌ Could not find player name element with any selector');
-  console.log('📋 Available elements:', document.body.innerHTML.substring(0, 500));
   return null;
 }
 
@@ -70,40 +105,48 @@ function injectOverlay(score, warning, faceitId, nickname) {
 
   const root = document.createElement('div');
   root.id = 'karma-vibe-root';
+  root.style.marginTop = '12px';
+  root.style.display = 'flex';
+  root.style.gap = '8px';
   root.appendChild(createBadge(score, warning));
   root.appendChild(createVoteBtn(faceitId, nickname));
 
+  // Try to inject near the SHARE/GIFT SUB buttons
+  const injectionPoint = getInjectionPoint();
+  console.log('📍 Injection point:', injectionPoint);
+
+  if (injectionPoint && injectionPoint.parentNode) {
+    // Insert after the button container
+    injectionPoint.parentNode.insertBefore(root, injectionPoint.nextSibling);
+    console.log('✅ Successfully injected vibe badge below action buttons!');
+    return;
+  }
+
+  // Fallback: try player name element
   const nameElem = getPlayerNameElement();
   console.log('👤 Player name element:', nameElem);
 
-  if (nameElem) {
-    // Found a good place to inject - insert inline
-    root.style.marginTop = '10px';
-    root.style.marginBottom = '10px';
-
-    // Try to insert after the name element's parent container for better positioning
+  if (nameElem && nameElem.parentNode) {
     const container = nameElem.parentNode;
     if (container && container.parentNode) {
       container.parentNode.insertBefore(root, container.nextSibling);
-      console.log('✅ Successfully injected vibe badge after container!');
-    } else {
-      nameElem.parentNode.insertBefore(root, nameElem.nextSibling);
-      console.log('✅ Successfully injected vibe badge!');
+      console.log('✅ Successfully injected vibe badge after name!');
+      return;
     }
-  } else {
-    // Fallback: Create a floating badge in top-right corner
-    console.log('⚠️ No anchor element found, using floating badge');
-    root.style.position = 'fixed';
-    root.style.top = '80px';
-    root.style.right = '20px';
-    root.style.zIndex = '10000';
-    root.style.background = 'rgba(0, 0, 0, 0.9)';
-    root.style.padding = '15px';
-    root.style.borderRadius = '12px';
-    root.style.boxShadow = '0 4px 12px rgba(0,0,0,0.3)';
-    document.body.appendChild(root);
-    console.log('✅ Successfully injected floating vibe badge!');
   }
+
+  // Last resort: Create a floating badge in top-right corner
+  console.log('⚠️ No anchor element found, using floating badge');
+  root.style.position = 'fixed';
+  root.style.top = '80px';
+  root.style.right = '20px';
+  root.style.zIndex = '10000';
+  root.style.background = 'rgba(0, 0, 0, 0.9)';
+  root.style.padding = '15px';
+  root.style.borderRadius = '12px';
+  root.style.boxShadow = '0 4px 12px rgba(0,0,0,0.3)';
+  document.body.appendChild(root);
+  console.log('✅ Successfully injected floating vibe badge!');
 }
 
 function openVoteModal(faceitId, nickname) {
