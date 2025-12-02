@@ -5,24 +5,38 @@ console.log('🛡️ CommSafe Faceit extension loaded! URL:', window.location.hr
 
 // Where to inject on Faceit profile
 function getPlayerNameElement() {
-  // Faceit profile page selectors
+  // Faceit profile page selectors - try multiple approaches
   const selectors = [
+    // New Faceit design
+    'div[class*="profile-header"] h2',
+    'div[class*="profile-header"] h1',
+    '[class*="username"]',
+    '[class*="nickname"]',
+    '[class*="player-header"] h1',
+    '[class*="player-header"] h2',
+    // Old Faceit design
     '[data-testid="profile-name"]',
     '.profile-name',
     'h1.main-header__title',
     'div[class*="ProfileHeader"] h1',
-    'div[class*="profile-header"] div[class*="nickname"]'
+    // Fallback to any h1 or h2 near top of page
+    'main h1',
+    'main h2'
   ];
+
+  console.log('🔍 Searching for player name element...');
 
   for (const selector of selectors) {
     const elem = document.querySelector(selector);
     if (elem) {
       console.log('✅ Found player name element using selector:', selector);
+      console.log('✅ Element text:', elem.textContent);
       return elem;
     }
   }
 
   console.log('❌ Could not find player name element with any selector');
+  console.log('📋 Available elements:', document.body.innerHTML.substring(0, 500));
   return null;
 }
 
@@ -241,20 +255,42 @@ function initKarmaVibeOverlay() {
   fetchScore(faceitId, nickname, injectOverlay);
 }
 
-// Try multiple initialization methods
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', initKarmaVibeOverlay);
-} else {
-  initKarmaVibeOverlay();
-}
+// Try multiple initialization methods with aggressive retries
+console.log('📍 Document ready state:', document.readyState);
 
-window.addEventListener('load', function() {
+function tryInit() {
+  console.log('🚀 Attempting to initialize...');
   if (!document.getElementById('karma-vibe-root')) {
     initKarmaVibeOverlay();
   }
-});
+}
 
-// Watch for URL changes (Faceit uses SPA routing)
+// 1. Try immediately
+setTimeout(tryInit, 100);
+
+// 2. Try after DOM loaded
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', tryInit);
+} else {
+  tryInit();
+}
+
+// 3. Try after full page load
+window.addEventListener('load', tryInit);
+
+// 4. Retry every 2 seconds for first 10 seconds (Faceit loads slowly)
+let retries = 0;
+const retryInterval = setInterval(() => {
+  retries++;
+  console.log(`🔄 Retry attempt ${retries}/5`);
+  tryInit();
+  if (retries >= 5) {
+    clearInterval(retryInterval);
+    console.log('⏹️ Stopped retrying');
+  }
+}, 2000);
+
+// 5. Watch for URL changes (Faceit uses SPA routing)
 let lastUrl = window.location.href;
 new MutationObserver(() => {
   const currentUrl = window.location.href;
@@ -265,7 +301,7 @@ new MutationObserver(() => {
       // Remove old badge if exists
       const oldRoot = document.getElementById('karma-vibe-root');
       if (oldRoot) oldRoot.remove();
-      initKarmaVibeOverlay();
+      tryInit();
     }, 1500);
   }
 }).observe(document, { subtree: true, childList: true });
