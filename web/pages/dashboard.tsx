@@ -14,12 +14,23 @@ interface UserStats {
   tagBreakdown: Record<string, number>;
 }
 
+interface GoodTeammate {
+  userId: string;
+  steamId: string;
+  username: string;
+  positiveTags: string[];
+  totalPositiveVotes: number;
+  lastPlayed: string;
+  currentVibeScore: number | null;
+}
+
 const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:4000';
 
 export default function Dashboard() {
   const router = useRouter();
   const [user, setUser] = useState<any>(null);
   const [stats, setStats] = useState<UserStats | null>(null);
+  const [goodTeammates, setGoodTeammates] = useState<GoodTeammate[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
@@ -66,6 +77,10 @@ export default function Dashboard() {
       const givenResponse = await fetch(`${BACKEND_URL}/api/votes/by/${userId}`);
       const givenData = await givenResponse.json();
 
+      // Fetch good teammates
+      const teammatesResponse = await fetch(`${BACKEND_URL}/api/votes/good-teammates/${userId}`);
+      const teammatesData = await teammatesResponse.json();
+
       // Calculate tag breakdown
       const tagBreakdown: Record<string, number> = {};
       votesData.forEach((vote: any) => {
@@ -79,6 +94,8 @@ export default function Dashboard() {
         recentVotes: votesData.slice(-10).reverse(),
         tagBreakdown
       });
+
+      setGoodTeammates(teammatesData || []);
     } catch (e) {
       console.error('Failed to fetch stats:', e);
       setError('Failed to load dashboard statistics');
@@ -88,11 +105,15 @@ export default function Dashboard() {
   };
 
   const getTagColor = (tag: string) => {
-    const positiveSet = new Set(['Helpful', 'Team Player', 'Friendly', 'Skilled']);
-    const negativeSet = new Set(['Toxic', 'Rager', 'Cheater', 'AFK']);
+    const positiveSet = new Set(['Team Player', 'Clutch Master', 'Good Comms', 'Skilled', 'IGL Material', 'Entry Fragger']);
+    const negativeSet = new Set(['Toxic', 'Rage Quit', 'Team Damage', 'Trolling', 'Cheater', 'AFK']);
+    const neutralSet = new Set(['Silent', 'Eco Hunter']);
+    const badSet = new Set(['Force Buyer', 'Lurk Only', 'Baiter']);
 
     if (positiveSet.has(tag)) return '#10b981';
     if (negativeSet.has(tag)) return '#ef4444';
+    if (badSet.has(tag)) return '#f59e0b';
+    if (neutralSet.has(tag)) return '#64748b';
     return '#f59e0b';
   };
 
@@ -201,6 +222,117 @@ export default function Dashboard() {
                         </div>
                       ))}
                   </div>
+                </div>
+              )}
+
+              {/* Good Teammates Section */}
+              {goodTeammates.length > 0 && (
+                <div className="result-card" style={{ marginBottom: '2rem' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', flexWrap: 'wrap', gap: '1rem' }}>
+                    <div>
+                      <h2 style={{ fontSize: '24px', fontWeight: '800', margin: 0, color: 'var(--color-text)' }}>
+                        Good Teammates
+                      </h2>
+                      <p style={{ fontSize: '14px', color: 'var(--color-text-muted)', marginTop: '0.5rem' }}>
+                        Players you've positively rated - potential stack partners
+                      </p>
+                    </div>
+                    <div style={{ background: 'rgba(16, 185, 129, 0.1)', border: '2px solid #10b981', borderRadius: '8px', padding: '0.5rem 1rem' }}>
+                      <span style={{ fontSize: '20px', fontWeight: '800', color: '#10b981' }}>{goodTeammates.length}</span>
+                      <span style={{ fontSize: '14px', color: 'var(--color-text-muted)', marginLeft: '0.5rem' }}>found</span>
+                    </div>
+                  </div>
+
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '1rem' }}>
+                    {goodTeammates.slice(0, 12).map((teammate, idx) => (
+                      <div
+                        key={teammate.userId}
+                        style={{
+                          background: 'rgba(255, 255, 255, 0.05)',
+                          border: '1px solid rgba(16, 185, 129, 0.2)',
+                          borderRadius: '10px',
+                          padding: '1.25rem',
+                          transition: 'all 0.3s ease',
+                          cursor: 'pointer'
+                        }}
+                        className="teammate-card"
+                      >
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1rem' }}>
+                          <div style={{ flex: 1 }}>
+                            <div style={{ fontSize: '16px', fontWeight: '700', color: 'var(--color-text)', marginBottom: '0.25rem' }}>
+                              {teammate.username}
+                            </div>
+                            <div style={{ fontSize: '12px', color: 'var(--color-text-muted)', fontFamily: 'monospace' }}>
+                              {teammate.steamId}
+                            </div>
+                          </div>
+                          {teammate.currentVibeScore && (
+                            <div style={{
+                              background: teammate.currentVibeScore >= 4 ? 'rgba(16, 185, 129, 0.2)' : 'rgba(245, 158, 11, 0.2)',
+                              color: teammate.currentVibeScore >= 4 ? '#10b981' : '#f59e0b',
+                              padding: '0.25rem 0.75rem',
+                              borderRadius: '6px',
+                              fontSize: '14px',
+                              fontWeight: '700'
+                            }}>
+                              {teammate.currentVibeScore.toFixed(1)}★
+                            </div>
+                          )}
+                        </div>
+
+                        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem', marginBottom: '0.75rem' }}>
+                          {teammate.positiveTags.map(tag => (
+                            <span
+                              key={tag}
+                              style={{
+                                background: getTagColor(tag) + '20',
+                                color: getTagColor(tag),
+                                padding: '0.25rem 0.625rem',
+                                borderRadius: '4px',
+                                fontSize: '12px',
+                                fontWeight: '600'
+                              }}
+                            >
+                              {tag}
+                            </span>
+                          ))}
+                        </div>
+
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '12px', color: 'var(--color-text-muted)' }}>
+                          <span>+{teammate.totalPositiveVotes} endorsements</span>
+                          <span>Last: {new Date(teammate.lastPlayed).toLocaleDateString()}</span>
+                        </div>
+
+                        <a
+                          href={`https://steamcommunity.com/profiles/${teammate.steamId}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          style={{
+                            display: 'block',
+                            marginTop: '0.75rem',
+                            padding: '0.5rem',
+                            background: 'linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%)',
+                            color: 'white',
+                            textAlign: 'center',
+                            borderRadius: '6px',
+                            fontSize: '13px',
+                            fontWeight: '600',
+                            textDecoration: 'none',
+                            transition: 'all 0.3s ease'
+                          }}
+                          className="teammate-steam-link"
+                        >
+                          Add on Steam →
+                        </a>
+                      </div>
+                    ))}
+                  </div>
+
+                  {goodTeammates.length > 12 && (
+                    <div style={{ textAlign: 'center', marginTop: '1.5rem', color: 'var(--color-text-muted)', fontSize: '14px' }}>
+                      Showing 12 of {goodTeammates.length} good teammates
+                    </div>
+                  )}
                 </div>
               )}
 

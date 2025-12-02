@@ -12,7 +12,14 @@ router.post('/', async (req, res) => {
     return res.status(400).json({ error: 'reporter_id, target_id, and tag are required' });
   }
 
-  const validTags = ['Toxic', 'Helpful', 'No Mic', 'Rager', 'Team Player', 'AFK', 'Cheater', 'Friendly', 'Skilled'];
+  const validTags = [
+    // Positive tags
+    'Team Player', 'Clutch Master', 'Good Comms', 'Skilled', 'IGL Material', 'Entry Fragger',
+    // Neutral tags
+    'Silent', 'Eco Hunter',
+    // Negative tags
+    'Toxic', 'Rage Quit', 'Force Buyer', 'Team Damage', 'Baiter', 'Trolling', 'Lurk Only', 'Cheater', 'AFK'
+  ];
   if (!validTags.includes(tag)) {
     return res.status(400).json({ error: 'Invalid tag. Must be one of: ' + validTags.join(', ') });
   }
@@ -44,8 +51,8 @@ router.post('/', async (req, res) => {
     if (error) return res.status(400).json({ error: error.message });
 
     // Trigger notification if it's a significant vote
-    const negativeSet = new Set(['Toxic', 'Rager', 'Cheater', 'AFK']);
-    const positiveSet = new Set(['Helpful', 'Team Player', 'Friendly', 'Skilled']);
+    const negativeSet = new Set(['Toxic', 'Rage Quit', 'Cheater', 'AFK', 'Team Damage', 'Trolling', 'Baiter']);
+    const positiveSet = new Set(['Team Player', 'Clutch Master', 'Good Comms', 'Skilled', 'IGL Material', 'Entry Fragger']);
 
     if (negativeSet.has(tag)) {
       // Check if user has notification preferences
@@ -97,14 +104,27 @@ router.get('/aggregate/:id', async (req, res) => {
   const recent = (data || []).filter(v => new Date(v.created_at) > cutoff);
   // Tag weighting for scores (1-5 scale, 5 = best)
   const ratingMap = {
+    // Positive (5)
     'Team Player': 5,
-    'Helpful': 5,
-    'Friendly': 5,
+    'Clutch Master': 5,
+    'Good Comms': 5,
+    'IGL Material': 5,
+    // Good (4)
     'Skilled': 4,
-    'No Mic': 3,
-    'Rager': 2,
-    'AFK': 1,
+    'Entry Fragger': 4,
+    // Neutral (3)
+    'Silent': 3,
+    'Eco Hunter': 3,
+    // Bad (2)
+    'Force Buyer': 2,
+    'Lurk Only': 2,
+    'Baiter': 2,
+    // Very Bad (1)
     'Toxic': 1,
+    'Rage Quit': 1,
+    'Team Damage': 1,
+    'Trolling': 1,
+    'AFK': 1,
     'Cheater': 1
   } as const;
   const scores = recent.map(v => ratingMap[v.tag as keyof typeof ratingMap] ?? 3);
@@ -114,14 +134,23 @@ router.get('/aggregate/:id', async (req, res) => {
   const toxicCount = recent.filter(v => v.tag === 'Toxic').length;
   const cheaterCount = recent.filter(v => v.tag === 'Cheater').length;
   const afkCount = recent.filter(v => v.tag === 'AFK').length;
+  const teamDamageCount = recent.filter(v => v.tag === 'Team Damage').length;
+  const trollingCount = recent.filter(v => v.tag === 'Trolling').length;
+  const rageQuitCount = recent.filter(v => v.tag === 'Rage Quit').length;
 
   let warning = undefined;
   if (cheaterCount >= 5) {
-    warning = `🚫 WARNING: Reported as cheater by ${cheaterCount} users!`;
+    warning = `WARNING: Reported as cheater by ${cheaterCount} users!`;
+  } else if (teamDamageCount >= 8) {
+    warning = `Team killer detected - ${teamDamageCount} reports this month`;
+  } else if (trollingCount >= 10) {
+    warning = `Griefer alert: ${trollingCount} trolling reports`;
   } else if (toxicCount >= 10) {
-    warning = `⚠️ Flagged as toxic by ${toxicCount} users in the last month!`;
+    warning = `Flagged as toxic by ${toxicCount} users in the last month`;
+  } else if (rageQuitCount >= 7) {
+    warning = `Serial rage quitter - ${rageQuitCount} reports`;
   } else if (afkCount >= 8) {
-    warning = `💤 Frequently AFK - reported ${afkCount} times this month`;
+    warning = `Frequently AFK - reported ${afkCount} times this month`;
   }
   res.json({ vibeScore: avg ? Number(avg.toFixed(2)) : null, warning });
 });
@@ -132,6 +161,90 @@ router.get('/by/:reporter_id', async (req, res) => {
   const { data, error } = await supabase.from('votes').select('*').eq('reporter_id', reporter_id);
   if (error) return res.status(500).json({ error: error.message });
   res.json(data);
+});
+
+// Get "Good Teammates" - players the user has positively rated
+router.get('/good-teammates/:reporter_id', async (req, res) => {
+  try {
+    const { reporter_id } = req.params;
+
+    // Get all positive votes from this user
+    const positiveTagsQuery = ['Team Player', 'Clutch Master', 'Good Comms', 'Skilled', 'IGL Material', 'Entry Fragger'];
+
+    const { data: votes, error: votesError } = await supabase
+      .from('votes')
+      .select('target_id, tag, created_at')
+      .eq('reporter_id', reporter_id)
+      .in('tag', positiveTagsQuery)
+      .order('created_at', { ascending: false });
+
+    if (votesError) return res.status(500).json({ error: votesError.message });
+
+    // Group by target_id and count positive ratings
+    interface TeammateStats {
+      targetId: string;
+      positiveTags: string[];
+      lastPlayed: string;
+      totalPositiveVotes: number;
+    }
+
+    const teammateMap = new Map<string, TeammateStats>();
+
+    (votes || []).forEach(vote => {
+      const existing: TeammateStats = teammateMap.get(vote.target_id) || {
+        targetId: vote.target_id,
+        positiveTags: [],
+        lastPlayed: vote.created_at,
+        totalPositiveVotes: 0
+      };
+
+      if (!existing.positiveTags.includes(vote.tag)) {
+        existing.positiveTags.push(vote.tag);
+      }
+      existing.totalPositiveVotes++;
+
+      // Update last played if this vote is more recent
+      if (new Date(vote.created_at) > new Date(existing.lastPlayed)) {
+        existing.lastPlayed = vote.created_at;
+      }
+
+      teammateMap.set(vote.target_id, existing);
+    });
+
+    // Get user details and current vibe scores
+    const teammates = await Promise.all(
+      Array.from(teammateMap.entries()).map(async ([targetId, stats]) => {
+        // Get user info
+        const { data: user } = await supabase
+          .from('users')
+          .select('steam_id, username')
+          .eq('id', targetId)
+          .single();
+
+        // Get current vibe score
+        const vibeResponse = await fetch(`${process.env.BACKEND_URL || 'http://localhost:4000'}/api/votes/aggregate/${targetId}`);
+        const vibeData: any = await vibeResponse.json();
+
+        return {
+          userId: targetId,
+          steamId: user?.steam_id || 'Unknown',
+          username: user?.username || 'Unknown Player',
+          positiveTags: stats.positiveTags,
+          totalPositiveVotes: stats.totalPositiveVotes,
+          lastPlayed: stats.lastPlayed,
+          currentVibeScore: vibeData?.vibeScore || null
+        };
+      })
+    );
+
+    // Sort by total positive votes (most endorsed first)
+    teammates.sort((a, b) => b.totalPositiveVotes - a.totalPositiveVotes);
+
+    res.json(teammates);
+  } catch (err: any) {
+    console.error('Good teammates error:', err);
+    res.status(500).json({ error: err.message || 'Unknown error' });
+  }
 });
 
 export default router;

@@ -6,29 +6,32 @@ body {
   margin: 0;
   padding: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', 'Helvetica Neue', Arial, sans-serif;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
   background-attachment: fixed;
-  color: #1e293b;
+  color: #e2e8f0;
   line-height: 1.6;
 }
 
 :root {
-  --color-primary: #6366f1;
-  --color-primary-dark: #4f46e5;
-  --color-secondary: #8b5cf6;
-  --color-accent: #ec4899;
+  --color-primary: #ff6b35;
+  --color-primary-dark: #e55a2b;
+  --color-secondary: #00d9ff;
+  --color-accent: #7c3aed;
   --color-success: #10b981;
-  --color-warning: #f59e0b;
+  --color-warning: #ff6b35;
   --color-danger: #ef4444;
-  --color-bg: #f8fafc;
-  --color-card: #ffffff;
-  --color-border: #e2e8f0;
-  --color-text: #1e293b;
-  --color-text-muted: #64748b;
-  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  --color-bg: #0f172a;
+  --color-bg-elevated: #1e293b;
+  --color-card: #1e293b;
+  --color-border: #334155;
+  --color-text: #e2e8f0;
+  --color-text-muted: #94a3b8;
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4), 0 2px 4px -1px rgba(0, 0, 0, 0.3);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.4), 0 4px 6px -2px rgba(0, 0, 0, 0.3);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 10px 10px -5px rgba(0, 0, 0, 0.3);
+  --glow-orange: 0 0 20px rgba(255, 107, 53, 0.3);
+  --glow-teal: 0 0 20px rgba(0, 217, 255, 0.3);
 }
 
 a {
@@ -43,11 +46,11 @@ a:hover {
 
 /* Navbar */
 .navbar {
-  background: rgba(255, 255, 255, 0.95);
+  background: rgba(15, 23, 42, 0.95);
   backdrop-filter: blur(10px);
-  border-bottom: 1px solid rgba(226, 232, 240, 0.8);
+  border-bottom: 1px solid rgba(255, 107, 53, 0.2);
   padding: 1rem 2rem;
-  box-shadow: var(--shadow-sm);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
   display: flex;
   align-items: center;
   position: sticky;
@@ -82,7 +85,7 @@ a:hover {
   margin: 2rem auto;
   padding: 3rem 4rem;
   background: var(--color-card);
-  border-radius: 20px;
+  border-radius: 12px;
   box-shadow: var(--shadow-xl);
   border: 1px solid var(--color-border);
 }
@@ -97,23 +100,25 @@ a:hover {
 /* Buttons */
 .btn-primary {
   padding: 0.75rem 1.5rem;
-  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%);
+  background: linear-gradient(135deg, var(--color-primary) 0%, #e55a2b 100%);
   color: white;
   border: 0;
-  border-radius: 10px;
+  border-radius: 8px;
   font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
-  box-shadow: 0 4px 14px 0 rgba(99, 102, 241, 0.39);
-  transition: all 0.2s ease;
+  box-shadow: var(--glow-orange);
+  transition: all 0.3s ease;
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 .btn-primary:hover {
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(99, 102, 241, 0.5);
+  box-shadow: 0 0 30px rgba(255, 107, 53, 0.5);
 }
 
 .btn-primary:active {
@@ -122,20 +127,23 @@ a:hover {
 
 .btn-secondary {
   padding: 0.75rem 1.5rem;
-  background: white;
-  color: var(--color-primary);
-  border: 2px solid var(--color-primary);
-  border-radius: 10px;
+  background: transparent;
+  color: var(--color-secondary);
+  border: 2px solid var(--color-secondary);
+  border-radius: 8px;
   font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 .btn-secondary:hover {
-  background: var(--color-primary);
-  color: white;
+  background: var(--color-secondary);
+  color: var(--color-bg);
   transform: translateY(-2px);
+  box-shadow: var(--glow-teal);
 }
 
 /* Home Page */
@@ -149,11 +157,12 @@ a:hover {
 }
 
 .home-bg .container {
-  background: rgba(255, 255, 255, 0.98);
+  background: rgba(30, 41, 59, 0.8);
   backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.3);
+  border: 1px solid rgba(255, 107, 53, 0.2);
   max-width: 1600px;
   padding: 4rem 5rem;
+  box-shadow: 0 0 40px rgba(255, 107, 53, 0.1);
 }
 
 @media (max-width: 1400px) {
@@ -168,7 +177,7 @@ a:hover {
   font-weight: 900;
   line-height: 1.1;
   margin-bottom: 1.5rem;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+  background: linear-gradient(135deg, #ff6b35 0%, #00d9ff 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -208,9 +217,9 @@ a:hover {
 }
 
 .feature-card {
-  background: white;
+  background: var(--color-card);
   padding: 2rem;
-  border-radius: 16px;
+  border-radius: 12px;
   box-shadow: var(--shadow-md);
   border: 1px solid var(--color-border);
   transition: all 0.3s ease;
@@ -227,7 +236,7 @@ a:hover {
   width: 48px;
   height: 48px;
   background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%);
-  border-radius: 12px;
+  border-radius: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -257,11 +266,17 @@ a:hover {
 }
 
 .stat-card {
-  background: linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(139, 92, 246, 0.1) 100%);
+  background: rgba(255, 107, 53, 0.1);
   padding: 1.5rem;
   border-radius: 12px;
   text-align: center;
-  border: 1px solid rgba(99, 102, 241, 0.2);
+  border: 1px solid rgba(255, 107, 53, 0.3);
+  transition: all 0.3s ease;
+}
+
+.stat-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--glow-orange);
 }
 
 .stat-number {
@@ -293,23 +308,23 @@ a:hover {
   padding: 1rem 1.5rem;
   font-size: 18px;
   border: 2px solid var(--color-border);
-  border-radius: 12px;
+  border-radius: 10px;
   transition: all 0.2s ease;
-  background: white;
+  background: var(--color-bg-elevated);
   color: var(--color-text);
 }
 
 .search-input:focus {
   outline: none;
   border-color: var(--color-primary);
-  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+  box-shadow: var(--glow-orange);
 }
 
 .result-card {
-  background: white;
+  background: var(--color-card);
   padding: 2rem;
-  border-radius: 16px;
-  border: 2px solid var(--color-border);
+  border-radius: 12px;
+  border: 1px solid var(--color-border);
   margin-top: 2rem;
   box-shadow: var(--shadow-md);
 }
@@ -342,7 +357,7 @@ a:hover {
 
 .tag {
   padding: 0.5rem 1rem;
-  background: var(--color-bg);
+  background: var(--color-bg-elevated);
   border: 1px solid var(--color-border);
   border-radius: 20px;
   font-size: 14px;
@@ -351,13 +366,13 @@ a:hover {
 }
 
 .tag.toxic {
-  background: rgba(239, 68, 68, 0.1);
+  background: rgba(239, 68, 68, 0.15);
   border-color: var(--color-danger);
   color: var(--color-danger);
 }
 
 .tag.helpful {
-  background: rgba(16, 185, 129, 0.1);
+  background: rgba(16, 185, 129, 0.15);
   border-color: var(--color-success);
   color: var(--color-success);
 }
@@ -370,7 +385,7 @@ table {
 }
 
 table thead {
-  background: var(--color-bg);
+  background: var(--color-bg-elevated);
 }
 
 table th {
@@ -384,10 +399,23 @@ table th {
 table td {
   padding: 1rem;
   border-bottom: 1px solid var(--color-border);
+  color: var(--color-text);
 }
 
 table tbody tr:hover {
-  background: rgba(99, 102, 241, 0.05);
+  background: rgba(255, 107, 53, 0.1);
+}
+
+/* Good Teammates */
+.teammate-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
+  border-color: rgba(16, 185, 129, 0.5);
+}
+
+.teammate-steam-link:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--glow-orange);
 }
 
 /* Responsive */

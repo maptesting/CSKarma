@@ -25,7 +25,14 @@ interface LiveVote {
 
 const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:4000';
 
-const VOTE_TAGS = ['Helpful', 'Team Player', 'Friendly', 'Skilled', 'Toxic', 'Rager', 'Cheater', 'AFK', 'No Mic'];
+const VOTE_TAGS = [
+  // Positive
+  'Team Player', 'Clutch Master', 'Good Comms', 'Skilled', 'IGL Material', 'Entry Fragger',
+  // Neutral
+  'Silent', 'Eco Hunter',
+  // Negative
+  'Toxic', 'Rage Quit', 'Force Buyer', 'Team Damage', 'Baiter', 'Trolling', 'Lurk Only', 'Cheater', 'AFK'
+];
 const REGIONS = ['NA East', 'NA West', 'EU West', 'EU North', 'Asia', 'OCE', 'SA'];
 
 export default function Leaderboards() {
@@ -104,11 +111,15 @@ export default function Leaderboards() {
   };
 
   const getTagColor = (tag: string) => {
-    const positiveSet = new Set(['Helpful', 'Team Player', 'Friendly', 'Skilled']);
-    const negativeSet = new Set(['Toxic', 'Rager', 'Cheater', 'AFK']);
+    const positiveSet = new Set(['Team Player', 'Clutch Master', 'Good Comms', 'Skilled', 'IGL Material', 'Entry Fragger']);
+    const negativeSet = new Set(['Toxic', 'Rage Quit', 'Team Damage', 'Trolling', 'Cheater', 'AFK']);
+    const neutralSet = new Set(['Silent', 'Eco Hunter']);
+    const badSet = new Set(['Force Buyer', 'Lurk Only', 'Baiter']);
 
     if (positiveSet.has(tag)) return '#10b981';
     if (negativeSet.has(tag)) return '#ef4444';
+    if (badSet.has(tag)) return '#f59e0b';
+    if (neutralSet.has(tag)) return '#64748b';
     return '#f59e0b';
   };
 

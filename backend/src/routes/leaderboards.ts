@@ -19,14 +19,27 @@ router.get('/top-players', async (req, res) => {
 
     // Calculate vibe scores for each player
     const ratingMap: Record<string, number> = {
+      // Positive (5)
       'Team Player': 5,
-      'Helpful': 5,
-      'Friendly': 5,
+      'Clutch Master': 5,
+      'Good Comms': 5,
+      'IGL Material': 5,
+      // Good (4)
       'Skilled': 4,
-      'No Mic': 3,
-      'Rager': 2,
-      'AFK': 1,
+      'Entry Fragger': 4,
+      // Neutral (3)
+      'Silent': 3,
+      'Eco Hunter': 3,
+      // Bad (2)
+      'Force Buyer': 2,
+      'Lurk Only': 2,
+      'Baiter': 2,
+      // Very Bad (1)
       'Toxic': 1,
+      'Rage Quit': 1,
+      'Team Damage': 1,
+      'Trolling': 1,
+      'AFK': 1,
       'Cheater': 1
     };
 
