@@ -5,35 +5,48 @@ console.log('🛡️ CommSafe Faceit extension loaded! URL:', window.location.hr
 
 // Where to inject on Faceit profile - look for action buttons area
 function getInjectionPoint() {
-  // Try to find the SHARE/GIFT SUB button container
-  const selectors = [
-    'button[aria-label*="SHARE"]',
-    'button:has-text("SHARE")',
-    '[class*="profile"] button',
-    '[class*="member-since"]'
-  ];
-
   console.log('🔍 Searching for injection point near SHARE button...');
 
   // Look for elements containing "SHARE" text
   const buttons = Array.from(document.querySelectorAll('button'));
-  const shareButton = buttons.find(btn => btn.textContent.includes('SHARE'));
+  const shareButton = buttons.find(btn => btn.textContent.trim() === 'SHARE');
 
   if (shareButton) {
     console.log('✅ Found SHARE button:', shareButton);
-    // Find the parent container that holds both SHARE and GIFT SUB
-    const container = shareButton.closest('div');
-    if (container) {
-      console.log('✅ Found button container');
-      return container;
+    console.log('SHARE button parent:', shareButton.parentElement);
+
+    // The buttons are likely in a flex container together
+    // Try to find the parent that contains both buttons
+    let parent = shareButton.parentElement;
+
+    // Go up a few levels to find the container that holds both action buttons
+    for (let i = 0; i < 3; i++) {
+      if (parent) {
+        console.log(`Level ${i} parent:`, parent);
+        const hasGift = Array.from(parent.querySelectorAll('button')).some(btn =>
+          btn.textContent.includes('GIFT')
+        );
+        if (hasGift) {
+          console.log('✅ Found container with both SHARE and GIFT buttons');
+          return parent;
+        }
+        parent = parent.parentElement;
+      }
     }
+
+    // If we can't find the combined container, just use the SHARE button's immediate parent
+    console.log('⚠️ Using SHARE button parent as fallback');
+    return shareButton.parentElement;
   }
 
-  // Fallback: try to find any action button area
-  const giftButton = buttons.find(btn => btn.textContent.includes('GIFT'));
-  if (giftButton) {
-    console.log('✅ Found GIFT button');
-    return giftButton.closest('div');
+  // Try "Member since" text as another anchor point
+  const memberSinceText = Array.from(document.querySelectorAll('*')).find(el =>
+    el.textContent.includes('Member since')
+  );
+
+  if (memberSinceText) {
+    console.log('✅ Found "Member since" text, using its parent');
+    return memberSinceText.parentElement;
   }
 
   console.log('❌ Could not find injection point near buttons');
